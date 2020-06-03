@@ -1,0 +1,28 @@
+<div>
+  <h1>Panel wykładowcy</h1>
+  <div class="d-flex bd-highlight mb-3 mt-3">
+    <button class="btn btn-primary mr-2 btn-lg">
+      Wiadomości
+      <span *ngIf="pageData.newMessages != 0" class="badge badge-danger ml-1">
+        {{ pageData.newMessages }}
+      </span>
+    </button>
+    <button class="btn btn-primary mr-2 btn-lg">Tematy</button>
+  </div>
+  <hr class="solid">
+  <div>
+    <div class="h4">
+      <span class="font-weight-bold">Dostepne tematy: </span>{{ pageData.availableTopics }}
+    </div>
+    <div class="h4">
+      <span class="font-weight-bold">Tematy w trakcie realizacji: </span>{{ pageData.inProgressTopics }}
+    </div>
+    <div class="h4">
+      <span class="font-weight-bold">Tematy wymagające potwierdzenia: </span>{{ pageData.actionRequiredTopics }}
+    </div>
+    <div class="h4">
+      <span class="font-weight-bold">Zrealizowane tematy: </span>{{ pageData.finishedTopics }}
+    </div>
+  </div>
+  <p-chart type="doughnut" [data]="data" [options]="options"></p-chart>
+</div>

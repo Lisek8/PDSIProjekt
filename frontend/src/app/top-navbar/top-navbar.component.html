@@ -1,0 +1,45 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-tul">
+  <a class="navbar-brand" href="#">Prace dyplomowe</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
+    aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Lista tematów <span class="sr-only">(current)</span></a>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-md-auto">
+      <li class="nav-item active">
+        <div *ngIf="loggedIn; else notLoggedIn" class="dropdown">
+          <button class="btn btn-outline-secondary dropdown-toggle text-light" type="button" id="dropdownMenu2"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          </button>
+          <div class="dropdown-menu dropdown-menu-right">
+            <h6 class="dropdown-header">Menu</h6>
+            <a class="dropdown-item" href="#">Wiadomości</a>
+            <a class="dropdown-item" href="/personal">Moje tematy</a>
+            <a class="dropdown-item">
+              <div class="form-group">
+                <label for="darkSwitch">Tryb ciemny</label><br>
+                <div class="custom-control custom-switch">
+                  <input type="checkbox" class="custom-control-input" id="darkSwitch" [(ngModel)]="darkModeChecked"
+                    (change)="resetTheme()" />
+                  <label class="custom-control-label" for="darkSwitch"></label>
+                </div>
+              </div>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">
+              <button type="button" class="btn btn-danger" (click)="logOut()">Wyloguj</button>
+            </a>
+          </div>
+        </div>
+        <ng-template #notLoggedIn><button class="btn btn-primary my-2 my-sm-0" type="submit"
+            (click)="logIn()">Zaloguj</button>
+        </ng-template>
+      </li>
+    </ul>
+  </div>
+</nav>
