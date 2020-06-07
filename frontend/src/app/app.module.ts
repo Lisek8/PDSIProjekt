@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
 import { AppComponent } from './app.component';
 import { TopNavbarComponent } from './components/top-navbar/top-navbar.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -16,6 +15,10 @@ import { ConversationListComponent } from './components/conversation-list/conver
 import { ToastrModule } from 'ngx-toastr';
 import { LecturerPanelComponent } from './components/lecturer-panel/lecturer-panel.component';
 import { ChartModule } from 'primeng/chart';
+import { HttpClientModule } from '@angular/common/http';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { ModalReserveConfirmationComponent } from './components/topics-list/modal-reserve-confirmation/modal-reserve-confirmation.component';
+import { ModalAskAboutTopicComponent } from './components/topics-list/modal-ask-about-topic/modal-ask-about-topic.component';
 
 @NgModule({
    declarations: [
@@ -24,7 +27,9 @@ import { ChartModule } from 'primeng/chart';
       TopicsListComponent,
       PersonalTopicsComponent,
       ConversationListComponent,
-      LecturerPanelComponent
+      LecturerPanelComponent,
+      ModalReserveConfirmationComponent,
+      ModalAskAboutTopicComponent
    ],
    imports: [
       BrowserModule,
@@ -36,11 +41,17 @@ import { ChartModule } from 'primeng/chart';
       FormsModule,
       TopicViewModule,
       ToastrModule.forRoot(),
-      ChartModule
+      ChartModule,
+      HttpClientModule,
+      NgbModule
    ],
    providers: [],
    bootstrap: [
       AppComponent
+   ],
+   entryComponents: [
+      ModalReserveConfirmationComponent,
+      ModalAskAboutTopicComponent
    ]
 })
 export class AppModule { }

@@ -3,7 +3,12 @@ import { SelectItem } from 'primeng/api';
 import { DataService } from '../../services/data/data.service';
 import { TopicDataSimple } from '../../models/topic-data';
 import { TopicListTableFields } from '../../enums/topic-list-table-headers.enum';
-import { Subscription } from 'rxjs';
+import { Subscription, EMPTY } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
+import { catchError } from 'rxjs/operators';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { ModalReserveConfirmationComponent } from './modal-reserve-confirmation/modal-reserve-confirmation.component';
+import { ModalAskAboutTopicComponent } from './modal-ask-about-topic/modal-ask-about-topic.component';
 
 @Component({
   selector: 'app-topics-list',
@@ -23,6 +28,8 @@ export class TopicsListComponent implements OnInit, OnDestroy {
   selectedLecturers: SelectItem[];
   selectedTypes: SelectItem[];
 
+  openModalRef: NgbModalRef;
+
   searchInput = '';
 
   cols = [
@@ -33,10 +40,17 @@ export class TopicsListComponent implements OnInit, OnDestroy {
     { field: TopicListTableFields.Tags, header: 'Tagi', sortable: false }
   ];
 
-  constructor(private dataService: DataService) { }
+  constructor(private dataService: DataService, private toastService: ToastrService, private modalService: NgbModal) { }
 
   ngOnInit() {
-    this.topicSubscription = this.dataService.getTopics().subscribe((topics) => this.topics = topics);
+    this.topicSubscription = this.dataService.getTopics().
+    pipe(
+      catchError(err => {
+        this.toastService.error('Nie udało się pobrać listy tematów', 'Błąd');
+        return EMPTY;
+      })
+    ).
+    subscribe((topics) => this.topics = topics);
     this.populateFilters();
   }
 
@@ -59,6 +73,18 @@ export class TopicsListComponent implements OnInit, OnDestroy {
         this.selectOptionsType.push({ label: topic.type, value: topic.type });
       }
     }
+  }
+
+  openConfirmationModal(topic: TopicDataSimple) {
+    this.openModalRef = this.modalService.open(ModalReserveConfirmationComponent);
+    this.openModalRef.componentInstance.topicData = topic;
+    this.openModalRef.componentInstance.modalRef = this.openModalRef;
+  }
+
+  openAskAboutModal(topic: TopicDataSimple) {
+    this.openModalRef = this.modalService.open(ModalAskAboutTopicComponent);
+    this.openModalRef.componentInstance.topicData = topic;
+    this.openModalRef.componentInstance.modalRef = this.openModalRef;
   }
 
 }

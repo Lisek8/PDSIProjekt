@@ -75,10 +75,10 @@
             </div>
             <div class="p-1 d-flex flex-row-reverse justify-content-start">
               <span class="ml-2">
-                <button type="button" class="btn btn-info">Zapytaj o temat</button>
+                <button type="button" class="btn btn-info" (click)="openAskAboutModal(rowData)">Zapytaj o temat</button>
               </span>
               <span class="ml-2">
-                <button type="button" class="btn btn-primary">Zarezerwuj</button>
+                <button type="button" class="btn btn-primary" (click)="openConfirmationModal(rowData)">Zarezerwuj</button>
               </span>
             </div>
           </div>
