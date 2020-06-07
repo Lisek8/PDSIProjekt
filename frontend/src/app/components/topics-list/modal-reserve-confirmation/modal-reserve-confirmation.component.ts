@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
+import { NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import { TopicDataSimple } from 'src/app/models/topic-data';
 
 @Component({

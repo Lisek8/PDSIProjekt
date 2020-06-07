@@ -17,6 +17,7 @@ import { LecturerPanelComponent } from './components/lecturer-panel/lecturer-pan
 import { ChartModule } from 'primeng/chart';
 import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+// tslint:disable-next-line:max-line-length
 import { ModalReserveConfirmationComponent } from './components/topics-list/modal-reserve-confirmation/modal-reserve-confirmation.component';
 import { ModalAskAboutTopicComponent } from './components/topics-list/modal-ask-about-topic/modal-ask-about-topic.component';
 

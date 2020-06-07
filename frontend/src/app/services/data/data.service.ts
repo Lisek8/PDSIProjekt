@@ -1,20 +1,17 @@
 import { Injectable } from '@angular/core';
-import { of, Observable, from, throwError } from 'rxjs';
+import { of, Observable } from 'rxjs';
 import { TopicDataSimple, TopicDataFull, TopicDataPersonal } from '../../models/topic-data';
 import { TopicType } from '../../enums/topic-type.enum';
 import { TopicStatus } from '../../enums/topic-status.enum';
 import { ConversationSimple } from '../../models/conversation';
 import { Dashboard } from '../../models/dashboard';
-import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
-import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
 
-  constructor(private http: HttpClient) { }
+  constructor() { }
 
   getTopics(): Observable<TopicDataSimple[]> {
     /* return this.http.get<TopicDataSimple[]>(environment.restServicesPath + 'topicslist').pipe(
@@ -393,7 +390,7 @@ export class DataService {
     });
   }
 
-  private handleError(err: any) {
+  /* private handleError(err: any) {
     let errorMessage: string;
     if (err.error instanceof ErrorEvent) {
       errorMessage = `An error occurred: ${err.error.message}`;
@@ -402,6 +399,6 @@ export class DataService {
     }
     console.error(err);
     return throwError(errorMessage);
-  }
+  } */
 
 }
