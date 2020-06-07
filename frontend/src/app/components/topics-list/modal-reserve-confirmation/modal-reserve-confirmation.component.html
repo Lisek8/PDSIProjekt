@@ -1,0 +1,24 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Rezerwacja tematu</h4>
+  <button type="button" class="close" aria-label="Close" (click)="modalRef.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="p-1">
+    <b>Wydział:</b> {{topicData.faculty}}
+  </div>
+  <div class="p-1">
+    <b>Wykładowca:</b> {{topicData.lecturer}}
+  </div>
+  <div class="p-1">
+    <b>Rodzaj pracy:</b> {{topicData.type}}
+  </div>
+  <div class="p-1">
+    <b>Temat pracy dyplomowej:</b> {{topicData.topic}}
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-success" (click)="reserveTopic(topicData.id);modalRef.close('Save click')">Rezerwuj</button>
+  <button type="button" class="btn btn-danger" (click)="modalRef.close('Cancel click')">Anuluj</button>
+</div>

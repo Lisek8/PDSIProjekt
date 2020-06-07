@@ -1,0 +1,89 @@
+<h1>Lista tematów</h1>
+<div class="mt-2 mb-2">
+  <h2>Filtrowanie</h2>
+  <div class="d-flex justify-content-start flex-wrap">
+    <div class="pt-2 pb-2 mr-2">
+      <p-multiSelect [options]="selectOptionsFaculty" [(ngModel)]="selectedFaculties"
+        (onChange)="topicsTable.filter($event.value, 'faculty', 'in')" defaultLabel="Wydział">
+      </p-multiSelect>
+    </div>
+    <div class="pt-2 pb-2 mr-2">
+      <p-multiSelect [options]="selectOptionsLecturer" [(ngModel)]="selectedLecturers"
+        (onChange)="topicsTable.filter($event.value, 'lecturer', 'in')" defaultLabel="Prowadzący">
+      </p-multiSelect>
+    </div>
+    <div class="pt-2 pb-2 mr-2">
+      <p-multiSelect [options]="selectOptionsType" [(ngModel)]="selectedTypes"
+        (onChange)="topicsTable.filter($event.value, 'type', 'in')" defaultLabel="Rodzaj pracy">
+      </p-multiSelect>
+    </div>
+    <div class="ui-inputgroup pt-2 pb-2 ml-auto">
+      <span class="ui-inputgroup-addon"><i class="fa fa-search"></i></span>
+      <input type="text" pInputText placeholder="Szukaj" [(ngModel)]="searchInput"
+        (ngModelChange)="topicsTable.filterGlobal($event, 'contains');">
+    </div>
+  </div>
+</div>
+<div>
+  <h2>Tematy</h2>
+  <p-table #topicsTable [columns]="cols" [value]="topics" [tableStyleClass]="'table table-bordered'" dataKey="topic">
+    <ng-template pTemplate="header" let-columns>
+      <tr class="text-center">
+        <th style="min-width: 35px; width: 50px;"></th>
+        <th *ngFor="let col of columns" [pSortableColumn]="col.field" [ngSwitch]="col.field">
+          {{col.header}}
+          <p-sortIcon *ngIf="col.sortable" [field]="col.field"></p-sortIcon>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+      <tr>
+        <td class="align-middle text-center">
+          <a href="#" [pRowToggler]="rowData">
+            <i [ngClass]="expanded ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
+          </a>
+        </td>
+        <td *ngFor="let col of columns" class="align-middle text-center">
+          <span *ngIf="col.field === 'tags'; else elseBlock">
+            <div *ngFor="let tag of rowData[col.field]" class="p-1 m-1 bg-secondary text-white">{{ tag }}</div>
+          </span>
+          <ng-template #elseBlock>{{ rowData[col.field] }}</ng-template>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+      <tr>
+        <td [attr.colspan]="columns.length + 1">
+          <div class="container-fluid p-2 m-2" style="font-size:16px;">
+            <div class="p-1">
+              <b>Wydział:</b> {{rowData.faculty}}
+            </div>
+            <div class="p-1">
+              <b>Wykładowca:</b> {{rowData.lecturer}}
+            </div>
+            <div class="p-1">
+              <b>Rodzaj pracy:</b> {{rowData.type}}
+            </div>
+            <div class="p-1">
+              <b>Temat pracy dyplomowej:</b> {{rowData.topic}}
+            </div>
+            <div class="p-1">
+              <b>Opis</b>
+              <div class="text-justify">
+                {{rowData.description}}
+              </div>
+            </div>
+            <div class="p-1 d-flex flex-row-reverse justify-content-start">
+              <span class="ml-2">
+                <button type="button" class="btn btn-info" (click)="openAskAboutModal(rowData)">Zapytaj o temat</button>
+              </span>
+              <span class="ml-2">
+                <button type="button" class="btn btn-primary" (click)="openConfirmationModal(rowData)">Zarezerwuj</button>
+              </span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
