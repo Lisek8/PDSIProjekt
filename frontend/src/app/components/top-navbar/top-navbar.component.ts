@@ -7,10 +7,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TopNavbarComponent implements OnInit {
   loggedIn = true;
+  darkModeChecked: boolean;
 
   constructor() { }
 
   ngOnInit() {
+    this.initTheme();
   }
 
   logIn() {
@@ -19,5 +21,25 @@ export class TopNavbarComponent implements OnInit {
 
   logOut() {
     this.loggedIn = false;
+  }
+
+  initTheme() {
+    this.darkModeChecked = localStorage.getItem('theme') !== null && localStorage.getItem('theme') === 'dark';
+    if (this.darkModeChecked) {
+      document.body.classList.add('dark');
+
+    } else {
+      document.body.classList.remove('dark');
+    }
+  }
+
+  resetTheme() {
+    if (this.darkModeChecked) {
+      document.body.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.body.classList.remove('dark');
+      localStorage.removeItem('theme');
+    }
   }
 }
