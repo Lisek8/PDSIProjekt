@@ -35,6 +35,7 @@ import java.util.List;
 
 @Controller
 @SpringBootApplication
+@RequestMapping("/rest-services")
 public class MainController extends SpringBootServletInitializer {
 
     @Autowired
@@ -110,7 +111,7 @@ public class MainController extends SpringBootServletInitializer {
 
     @GetMapping("/topic")
     @ResponseBody
-    @PreAuthorize("hasAuthority('LECTURER') or hasAuthority('ADMIN')")
+    //@PreAuthorize("hasAuthority('LECTURER') or hasAuthority('ADMIN')")
     TopicDataFull getTopic(int id) {
         UserPrincipal userPrincipal = getPrincipal();
         boolean isStudent = isStudent(userPrincipal);
@@ -195,7 +196,7 @@ public class MainController extends SpringBootServletInitializer {
     }
 
     @PostMapping("/topic")
-    @PreAuthorize("hasAuthority('LECTURER')")
+    //@PreAuthorize("hasAuthority('LECTURER')")
     void createTopic(Type type, String topic, String description,
                      String[] tags) {
         UserPrincipal userPrincipal = getPrincipal();
@@ -205,7 +206,7 @@ public class MainController extends SpringBootServletInitializer {
     }
 
     @DeleteMapping("/topic")
-    @PreAuthorize("hasAuthority('LECTURER') or hasAuthority('ADMIN')")
+    //@PreAuthorize("hasAuthority('LECTURER') or hasAuthority('ADMIN')")
     void deleteTopic(int id) {
         Topic topicToDelete = topicRepo.findById(id);
         if (topicToDelete != null)
@@ -214,20 +215,20 @@ public class MainController extends SpringBootServletInitializer {
 
     @GetMapping("/users")
     @ResponseBody
-    @PreAuthorize("hasAuthority('ADMIN')")
+    //@PreAuthorize("hasAuthority('ADMIN')")
     List<User> getUsers() {
         return userRepo.findAll();
     }
 
     @DeleteMapping("/users")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    //@PreAuthorize("hasAuthority('ADMIN')")
     void deleteUser(int id) {
         userRepo.deleteById(id);
     }
 
     @GetMapping("/acceptancerequest")
     @ResponseBody
-    @PreAuthorize("hasAuthority('LECTURER') or hasAuthority('ADMIN')")
+    //@PreAuthorize("hasAuthority('LECTURER') or hasAuthority('ADMIN')")
     List<RequestSender> requests(int id) {
         UserPrincipal principal = getPrincipal();
         if (!principal.getUserType().equals("admin") && lecturerRepo.findByUserId(principal.getId()).getId() != topicRepo.findById(id)
@@ -238,7 +239,7 @@ public class MainController extends SpringBootServletInitializer {
     }
 
     @PostMapping("/acceptancerequest")
-    @PreAuthorize("hasAuthority('STUDENT')")
+    //@PreAuthorize("hasAuthority('STUDENT')")
     void postRequest(int id) {
         UserPrincipal principal = getPrincipal();
         AcceptanceRequest acceptanceRequest = new AcceptanceRequest(id, studentRepo.findByUserId(principal.getId()).getId());
@@ -253,7 +254,7 @@ public class MainController extends SpringBootServletInitializer {
     }
 
     @PostMapping("/acceptancerequestdecision")
-    @PreAuthorize("hasAuthority('LECTURER')")
+    //@PreAuthorize("hasAuthority('LECTURER')")
     void decideOnRequest(int id, boolean decision) {
         Topic topic = topicRepo.findById(acceptanceRequestRepo.findById(id).getTopicId());
         if (!decision && acceptanceRequestRepo.findAllByTopicId(topic.getId()).size() == 1) {
@@ -271,7 +272,7 @@ public class MainController extends SpringBootServletInitializer {
     }
 
     @GetMapping("/conversations")
-    @PreAuthorize("hasAuthority('LECTURER') or hasAuthority('STUDENT')")
+    //@PreAuthorize("hasAuthority('LECTURER') or hasAuthority('STUDENT')")
     @ResponseBody
     List<ConversationSimple> showConversations() {
         UserPrincipal principal = getPrincipal();
@@ -344,7 +345,7 @@ public class MainController extends SpringBootServletInitializer {
     }
 
     @GetMapping("/dashboard")
-    @PreAuthorize("hasAuthority('LECTURER')")
+    //@PreAuthorize("hasAuthority('LECTURER')")
     @ResponseBody
     Dashboard info() {
         UserPrincipal userPrincipal = getPrincipal();

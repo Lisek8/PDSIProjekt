@@ -37,18 +37,16 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/topiclist", "/h2-console/**").permitAll()
-                .anyRequest()
-                .authenticated()
+                .antMatchers("/rest-services/topiclist").permitAll()
+                .antMatchers("/rest-services/**").authenticated()
+                .antMatchers("/**").permitAll()
                 .and()
                 .headers().frameOptions().disable()
 
-
+                
                 .and()
                 .formLogin()
-                //.loginPage("/login")
                 .permitAll()
-                .defaultSuccessUrl("/", true)
                 .passwordParameter("password")
                 .usernameParameter("username")
 
