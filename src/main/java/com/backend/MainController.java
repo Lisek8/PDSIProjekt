@@ -35,6 +35,7 @@ import java.util.List;
 
 @Controller
 @SpringBootApplication
+@RequestMapping("/rest-services")
 public class MainController extends SpringBootServletInitializer {
 
     @Autowired
