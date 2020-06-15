@@ -9,14 +9,6 @@
       (click)="setTab(tabs.Messages)">{{ tabs.Messages }}</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" [ngClass]="{'active': activeTab === tabs.Arrangements}"
-      (click)="setTab(tabs.Arrangements)">{{ tabs.Arrangements }}</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" [ngClass]="{'active': activeTab === tabs.Files}"
-      (click)="setTab(tabs.Files)">{{ tabs.Files }}</a>
-  </li>
-  <li class="nav-item">
     <a class="nav-link" [ngClass]="{'active': activeTab === tabs.AcceptanceRequests}"
       (click)="setTab(tabs.AcceptanceRequests)">{{ tabs.AcceptanceRequests }}</a>
   </li>
@@ -24,9 +16,6 @@
 <div class="container-fluid pt-3 pb-3" [ngSwitch]="activeTab">
   <app-topic-view-general *ngSwitchCase="tabs.General" [data]="topicInfo | async"></app-topic-view-general>
   <app-topic-view-messages *ngSwitchCase="tabs.Messages" [data]="topicInfo | async"></app-topic-view-messages>
-  <app-topic-view-arrangements *ngSwitchCase="tabs.Arrangements" [data]="topicInfo | async">
-  </app-topic-view-arrangements>
-  <app-topic-view-files *ngSwitchCase="tabs.Files" [data]="topicInfo | async"></app-topic-view-files>
   <app-topic-view-acceptance-requests *ngSwitchCase="tabs.AcceptanceRequests" [data]="topicInfo | async">
   </app-topic-view-acceptance-requests>
 </div>

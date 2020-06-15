@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { PersonalTopicsTableHeaders } from '../../enums/personal-topics-table-headers.enum';
-import { TopicDataPersonal } from '../../models/topic-data';
+import { TopicDataPersonal, TopicDataSimple } from '../../models/topic-data';
 import { DataService } from '../../services/data/data.service';
 import { SelectItem } from 'primeng/api/selectitem';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { TopicType } from 'src/app/enums/topic-type.enum';
 
 @Component({
   selector: 'app-personal-topics',
@@ -10,7 +12,8 @@ import { SelectItem } from 'primeng/api/selectitem';
   styleUrls: ['./personal-topics.component.css']
 })
 export class PersonalTopicsComponent implements OnInit {
-  personalTopicsTableHeaders: any = PersonalTopicsTableHeaders;
+  personalTopicsTableHeaders: typeof PersonalTopicsTableHeaders = PersonalTopicsTableHeaders;
+  topicTypes: typeof TopicType = TopicType;
   topics: TopicDataPersonal[];
 
   selectOptionsType: SelectItem[];
@@ -18,6 +21,9 @@ export class PersonalTopicsComponent implements OnInit {
 
   selectedTypes: SelectItem[];
   selectedStatuses: SelectItem[];
+
+  newTopicInfo: TopicDataSimple;
+  topicTags: string;
 
   searchInput = '';
 
@@ -29,11 +35,20 @@ export class PersonalTopicsComponent implements OnInit {
     { field: PersonalTopicsTableHeaders.Messages, header: 'Nowych wiadomośći' }
   ];
 
-  constructor(private dataService: DataService) { }
+  constructor(private dataService: DataService, private modalService: NgbModal) { }
 
   ngOnInit() {
     this.dataService.getPersonalTopics().forEach((topics) => this.topics = topics);
     this.populateFilters();
+  }
+
+  open(content) {
+    this.topicTags = '';
+    this.newTopicInfo.description = '';
+    this.newTopicInfo.tags = [];
+    this.newTopicInfo.type = TopicType.Engineer;
+    this.newTopicInfo.description = '';
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'xl'});
   }
 
   populateFilters() {
@@ -47,5 +62,10 @@ export class PersonalTopicsComponent implements OnInit {
         this.selectOptionsStatus.push({ label: topic.status, value: topic.status });
       }
     }
+  }
+
+  createTopic() {
+    this.newTopicInfo.tags = this.topicTags.split(',');
+    // not implemented
   }
 }

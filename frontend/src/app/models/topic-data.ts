@@ -23,6 +23,5 @@ export interface TopicDataPersonal extends TopicDataSimple {
 export interface TopicDataFull extends TopicDataPersonal {
     conversations: Conversation[];
     arrangements: string;
-    files: string[];
     acceptanceRequests: AcceptanceRequest[];
 }
