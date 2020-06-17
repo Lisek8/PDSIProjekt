@@ -7,7 +7,12 @@
         {{ pageData.newMessages }}
       </span>
     </button>
-    <button class="btn btn-primary mr-2 btn-lg">Tematy</button>
+    <button class="btn btn-primary mr-2 btn-lg">
+      Moje tematy
+      <span *ngIf="pageData.actionRequiredTopics != 0" class="badge badge-danger ml-1">
+        {{ pageData.actionRequiredTopics }}
+      </span>
+    </button>
   </div>
   <hr class="solid">
   <div>

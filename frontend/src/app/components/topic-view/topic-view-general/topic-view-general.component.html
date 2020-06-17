@@ -20,8 +20,64 @@
     {{data.description}}
   </div>
 </div>
-<div class="p-1 d-flex flex-row-reverse justify-content-start">
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Edycja tematu</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-group">
+        <label for="topic">Temat</label>
+        <input type="text" class="form-control" id="topic" name="topic" placeholder="Temat" [(ngModel)]="dataEditCopy.topic">
+      </div>
+      <div class="form-group">
+        <label for="status">Status</label>
+        <select class="form-control" id="status" name="status" [(ngModel)]="dataEditCopy.status">
+          <option>{{ topicStatuses.Available }}</option>
+          <option>{{ topicStatuses.Finished }}</option>
+          <option>{{ topicStatuses.InProgress }}</option>
+          <option>{{ topicStatuses.RequiredAction }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="type">Typ pracy</label>
+        <select class="form-control" id="type" name="type" [(ngModel)]="dataEditCopy.type">
+          <option>{{ topicTypes.Engineer }}</option>
+          <option>{{ topicTypes.Master }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="date">Data obrony</label>
+        <div class="input-group">
+          <input id="date" class="form-control" name="date" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker #dp="ngbDatepicker" [(ngModel)]="dataEditCopy.examDate">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary calendar" (click)="dp.toggle()" type="button"></button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="description">Opis</label>
+        <textarea class="form-control" id="description" name="description" rows="10" [(ngModel)]="dataEditCopy.description"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="tags">Tagi</label>
+        <input type="text" class="form-control" id="tags" name="tags" placeholder="Tagi oddzielone przecinkiem" [(ngModel)]="topicTags">
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close();saveChanges()">Zapisz</button>
+  </div>
+</ng-template>
+
+
+<div class="p-1 d-flex flex-row-reverse justify-content-start" *ngIf="currentUserType === userTypes.Lecturer || currentUserType === userTypes.Admin">
   <span class="ml-2">
-    <button type="button" class="btn btn-primary">Edytuj</button>
+    <button class="btn btn-primary" (click)="open(content)">Edytuj</button>
+    <button class="btn btn-danger ml-2" (click)="open(content)">Usuń temat</button>
   </span>
 </div>

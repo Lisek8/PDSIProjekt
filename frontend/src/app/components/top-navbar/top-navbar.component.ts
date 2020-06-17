@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { RoleGuardService } from 'src/app/services/role-guard/role-guard.service';
+import { UserType } from 'src/app/enums/user-type.enum';
 
 @Component({
   selector: 'app-top-navbar',
@@ -6,21 +9,25 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./top-navbar.component.css']
 })
 export class TopNavbarComponent implements OnInit {
-  loggedIn = true;
   darkModeChecked: boolean;
+  currentUserType: UserType;
+  userTypes: typeof UserType = UserType;
 
-  constructor() { }
+  constructor(private router: Router, private roleService: RoleGuardService) { }
 
   ngOnInit() {
+    this.currentUserType = this.roleService.getUserType();
     this.initTheme();
   }
 
   logIn() {
-    this.loggedIn = true;
+    this.router.navigate(['/login'], {});
   }
 
   logOut() {
-    this.loggedIn = false;
+    this.roleService.resetUserType();
+    this.currentUserType = this.roleService.getUserType();
+    this.router.navigate(['/'], {});
   }
 
   initTheme() {
