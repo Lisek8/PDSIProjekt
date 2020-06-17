@@ -35,6 +35,16 @@
             </div>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item">
+              <div class="form-group">
+                <label for="darkSwitch">Tryb ciemny</label><br>
+                <div class="custom-control custom-switch">
+                  <input type="checkbox" class="custom-control-input" id="darkSwitch" [(ngModel)]="darkModeChecked"
+                    (change)="resetTheme()" />
+                  <label class="custom-control-label" for="darkSwitch"></label>
+                </div>
+              </div>
+            </a>
+            <a class="dropdown-item">
               <button type="button" class="btn btn-danger" (click)="logOut()">Wyloguj</button>
             </a>
           </div>

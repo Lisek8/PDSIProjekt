@@ -37,29 +37,28 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/topiclist", "/h2-console/**").permitAll()
-                .anyRequest()
-                .authenticated()
+                .antMatchers("/rest-services/topiclist").permitAll()
+                //.antMatchers("/rest-services/**").authenticated()
+                .antMatchers("/**").permitAll()
                 .and()
                 .headers().frameOptions().disable()
 
 
                 .and()
                 .formLogin()
-                //.loginPage("/login")
-                .permitAll()
-                .defaultSuccessUrl("/", true)
+                .loginPage("/webui/login")
+                .loginProcessingUrl("/rest-services/login")
                 .passwordParameter("password")
                 .usernameParameter("username")
 
                 .and()
                 .logout()
-                .logoutUrl("/logout")
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")) // https://docs.spring.io/spring-security/site/docs/4.2.12.RELEASE/apidocs/org/springframework/security/config/annotation/web/configurers/LogoutConfigurer.html
+                .logoutUrl("/rest-services/logout")
+                //.logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")) // https://docs.spring.io/spring-security/site/docs/4.2.12.RELEASE/apidocs/org/springframework/security/config/annotation/web/configurers/LogoutConfigurer.html
                 .clearAuthentication(true)
                 .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
-                .logoutSuccessUrl("/login");
+                .deleteCookies("JSESSIONID");
+                //.logoutSuccessUrl("/login");
     }
 
     @Bean

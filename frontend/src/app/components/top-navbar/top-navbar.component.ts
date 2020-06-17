@@ -9,7 +9,7 @@ import { UserType } from 'src/app/enums/user-type.enum';
   styleUrls: ['./top-navbar.component.css']
 })
 export class TopNavbarComponent implements OnInit {
-
+  darkModeChecked: boolean;
   currentUserType: UserType;
   userTypes: typeof UserType = UserType;
 
@@ -17,6 +17,7 @@ export class TopNavbarComponent implements OnInit {
 
   ngOnInit() {
     this.currentUserType = this.roleService.getUserType();
+    this.initTheme();
   }
 
   logIn() {
@@ -27,5 +28,25 @@ export class TopNavbarComponent implements OnInit {
     this.roleService.resetUserType();
     this.currentUserType = this.roleService.getUserType();
     this.router.navigate(['/'], {});
+  }
+
+  initTheme() {
+    this.darkModeChecked = localStorage.getItem('theme') !== null && localStorage.getItem('theme') === 'dark';
+    if (this.darkModeChecked) {
+      document.body.classList.add('dark');
+
+    } else {
+      document.body.classList.remove('dark');
+    }
+  }
+
+  resetTheme() {
+    if (this.darkModeChecked) {
+      document.body.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.body.classList.remove('dark');
+      localStorage.removeItem('theme');
+    }
   }
 }
