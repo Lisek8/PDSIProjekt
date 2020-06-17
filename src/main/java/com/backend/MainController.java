@@ -376,7 +376,7 @@ public class MainController extends SpringBootServletInitializer {
         }
     }
 
-    @GetMapping("/")
+    @GetMapping("/user")
     @ResponseBody
     UserPrincipal hello() {
         return getPrincipal();
