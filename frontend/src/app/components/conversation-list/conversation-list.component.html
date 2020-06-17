@@ -13,7 +13,8 @@
     <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
       <tr>
         <td *ngFor="let col of columns" [ngSwitch]="col.field" class="align-middle text-center">
-          <span *ngSwitchCase="'student'">{{ rowData.recipients[col.field] }}</span>
+          <span *ngSwitchCase="'student'">{{ rowData.recipients.student }}</span>
+          <span *ngSwitchCase="'lecturer'">{{ rowData.recipients.lecturer }}</span>
           <span *ngSwitchCase="'actions'">
             <a routerLink="/topicview/{{rowData.topicId}}"><button class="btn btn-primary">Otwórz</button></a>
           </span>

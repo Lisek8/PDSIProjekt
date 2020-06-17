@@ -1,5 +1,5 @@
 <h2>Moje tematy</h2>
-<div class="mt-2 mb-2">
+<div class="mt-2 mb-2" *ngIf="currentUserType === userTypes.Lecturer || currentUserType === userTypes.Admin">
   <h5>Filtrowanie</h5>
   <div class="d-flex justify-content-start flex-wrap">
     <div class="pt-2 pb-2 mr-2">
@@ -19,6 +19,77 @@
     </div>
   </div>
 </div>
+
+<div class="p-1 d-flex flex-row-reverse justify-content-start" *ngIf="currentUserType === userTypes.Lecturer || currentUserType === userTypes.Admin">
+  <span class="ml-2">
+    <button class="btn btn-primary" (click)="open(content)">Stwórz temat</button>
+  </span>
+</div>
+<div>
+  <h5>Tematy</h5>
+  <p-table #personalTopicsTable [columns]="cols" [value]="topics" [tableStyleClass]="'table table-bordered'"
+    dataKey="topic">
+    <ng-template pTemplate="header" let-columns>
+      <tr class="text-center">
+        <th style="min-width: 35px; width: 50px;"></th>
+        <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+          <span *ngIf="currentUserType !== userTypes.Lecturer && col.field === personalTopicsTableHeaders.Student; else elseBlock">Wykładowca</span>
+          <ng-template #elseBlock>{{col.header}}</ng-template>
+          <p-sortIcon [field]="col.field"></p-sortIcon>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+      <tr>
+        <td class="align-middle text-center">
+          <a href="#" [pRowToggler]="rowData">
+            <i [ngClass]="expanded ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
+          </a>
+        </td>
+        <td *ngFor="let col of columns" class="align-middle text-center">
+          <span *ngIf="currentUserType !== userTypes.Lecturer && col.field === personalTopicsTableHeaders.Student; else elseBlockColumn">{{rowData.lecturer}}</span>
+          <ng-template #elseBlockColumn>{{rowData[col.field]}}</ng-template>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+      <tr>
+        <td [attr.colspan]="columns.length + 1">
+          <div class="container-fluid p-2 m-2" style="font-size:16px;">
+            <div class="p-1">
+              <b>Temat:</b> {{rowData.topic}}
+            </div>
+            <div class="p-1">
+              <b>Status:</b> {{rowData.status}}
+            </div>
+            <div class="p-1">
+              <span *ngIf="currentUserType !== userTypes.Lecturer; else elseBlockStudent"><b>Wykładowca:</b> {{rowData.lecturer}}</span>
+              <ng-template #elseBlockStudent><b>Realizator:</b> {{rowData.student}}</ng-template>
+            </div>
+            <div class="p-1">
+              <b>Nowych wiadomości:</b> {{rowData.messages}}
+            </div>
+            <div class="p-1">
+              <b>Data obrony:</b> {{rowData.examDate}}
+            </div>
+            <div class="p-1">
+              <b>Opis</b>
+              <div class="text-justify">
+                {{rowData.description}}
+              </div>
+            </div>
+            <div class="p-1 d-flex flex-row-reverse justify-content-start">
+              <span class="ml-2">
+                <a routerLink="/topicview/{{rowData.id}}"><button type="button" class="btn btn-primary">Zobacz więcej</button></a>
+              </span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
 <ng-template #content let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">Edycja tematu</h4>
@@ -53,71 +124,3 @@
     <button type="button" class="btn btn-outline-dark" (click)="modal.close();createTopic()">Zapisz</button>
   </div>
 </ng-template>
-
-
-<div class="p-1 d-flex flex-row-reverse justify-content-start">
-  <span class="ml-2">
-    <button class="btn btn-primary" (click)="open(content)">Stwórz temat</button>
-  </span>
-</div>
-<div>
-  <h5>Tematy</h5>
-  <p-table #personalTopicsTable [columns]="cols" [value]="topics" [tableStyleClass]="'table table-bordered'"
-    dataKey="topic">
-    <ng-template pTemplate="header" let-columns>
-      <tr class="text-center">
-        <th style="min-width: 35px; width: 50px;"></th>
-        <th *ngFor="let col of columns" [pSortableColumn]="col.field">
-          {{col.header}}
-          <p-sortIcon [field]="col.field"></p-sortIcon>
-        </th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
-      <tr>
-        <td class="align-middle text-center">
-          <a href="#" [pRowToggler]="rowData">
-            <i [ngClass]="expanded ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
-          </a>
-        </td>
-        <td *ngFor="let col of columns" class="align-middle text-center">
-          {{rowData[col.field]}}
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
-      <tr>
-        <td [attr.colspan]="columns.length + 1">
-          <div class="container-fluid p-2 m-2" style="font-size:16px;">
-            <div class="p-1">
-              <b>Temat:</b> {{rowData.topic}}
-            </div>
-            <div class="p-1">
-              <b>Status:</b> {{rowData.status}}
-            </div>
-            <div class="p-1">
-              <b>Realizator:</b> {{rowData.student}}
-            </div>
-            <div class="p-1">
-              <b>Nowych wiadomości:</b> {{rowData.messages}}
-            </div>
-            <div class="p-1">
-              <b>Data obrony:</b> {{rowData.examDate}}
-            </div>
-            <div class="p-1">
-              <b>Opis</b>
-              <div class="text-justify">
-                {{rowData.description}}
-              </div>
-            </div>
-            <div class="p-1 d-flex flex-row-reverse justify-content-start">
-              <span class="ml-2">
-                <a routerLink="/topicview/{{rowData.id}}"><button type="button" class="btn btn-primary">Zobacz więcej</button></a>
-              </span>
-            </div>
-          </div>
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
-</div>

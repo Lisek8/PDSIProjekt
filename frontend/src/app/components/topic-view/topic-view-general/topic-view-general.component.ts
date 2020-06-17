@@ -3,6 +3,8 @@ import { TopicDataFull } from 'src/app/models/topic-data';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TopicType } from 'src/app/enums/topic-type.enum';
 import { TopicStatus } from 'src/app/enums/topic-status.enum';
+import { UserType } from 'src/app/enums/user-type.enum';
+import { RoleGuardService } from 'src/app/services/role-guard/role-guard.service';
 
 @Component({
   selector: 'app-topic-view-general',
@@ -15,10 +17,13 @@ export class TopicViewGeneralComponent implements OnInit {
   topicTags: string;
   topicTypes: typeof TopicType = TopicType;
   topicStatuses: typeof TopicStatus = TopicStatus;
+  currentUserType: UserType;
+  userTypes: typeof UserType = UserType;
 
-  constructor(private modalService: NgbModal) { }
+  constructor(private modalService: NgbModal, private roleService: RoleGuardService) { }
 
   ngOnInit() {
+    this.currentUserType = this.roleService.getUserType();
   }
 
   open(content) {

@@ -5,6 +5,8 @@ import { DataService } from '../../services/data/data.service';
 import { SelectItem } from 'primeng/api/selectitem';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TopicType } from 'src/app/enums/topic-type.enum';
+import { UserType } from 'src/app/enums/user-type.enum';
+import { RoleGuardService } from 'src/app/services/role-guard/role-guard.service';
 
 @Component({
   selector: 'app-personal-topics',
@@ -25,6 +27,9 @@ export class PersonalTopicsComponent implements OnInit {
   newTopicInfo: TopicDataSimple;
   topicTags: string;
 
+  currentUserType: UserType;
+  userTypes: typeof UserType = UserType;
+
   searchInput = '';
 
   cols = [
@@ -35,9 +40,10 @@ export class PersonalTopicsComponent implements OnInit {
     { field: PersonalTopicsTableHeaders.Messages, header: 'Nowych wiadomośći' }
   ];
 
-  constructor(private dataService: DataService, private modalService: NgbModal) { }
+  constructor(private dataService: DataService, private modalService: NgbModal, private roleService: RoleGuardService) { }
 
   ngOnInit() {
+    this.currentUserType = this.roleService.getUserType();
     this.dataService.getPersonalTopics().forEach((topics) => this.topics = topics);
     this.populateFilters();
   }

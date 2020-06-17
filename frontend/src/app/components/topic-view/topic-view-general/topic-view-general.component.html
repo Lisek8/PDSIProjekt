@@ -75,8 +75,9 @@
 </ng-template>
 
 
-<div class="p-1 d-flex flex-row-reverse justify-content-start">
+<div class="p-1 d-flex flex-row-reverse justify-content-start" *ngIf="currentUserType === userTypes.Lecturer || currentUserType === userTypes.Admin">
   <span class="ml-2">
     <button class="btn btn-primary" (click)="open(content)">Edytuj</button>
+    <button class="btn btn-danger ml-2" (click)="open(content)">Usuń temat</button>
   </span>
 </div>
