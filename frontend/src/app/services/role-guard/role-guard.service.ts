@@ -8,7 +8,7 @@ import { UserType } from 'src/app/enums/user-type.enum';
 })
 export class RoleGuardService implements CanActivate {
 
-  currentUserType: UserType = UserType.User;
+  currentUserType: UserType = UserType.Lecturer;
   routesActivationArray = [
     {
       path: 'personal',

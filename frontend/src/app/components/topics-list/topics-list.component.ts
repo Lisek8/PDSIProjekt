@@ -9,6 +9,8 @@ import { catchError } from 'rxjs/operators';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ModalReserveConfirmationComponent } from './modal-reserve-confirmation/modal-reserve-confirmation.component';
 import { ModalAskAboutTopicComponent } from './modal-ask-about-topic/modal-ask-about-topic.component';
+import { UserType } from 'src/app/enums/user-type.enum';
+import { RoleGuardService } from 'src/app/services/role-guard/role-guard.service';
 
 @Component({
   selector: 'app-topics-list',
@@ -16,6 +18,9 @@ import { ModalAskAboutTopicComponent } from './modal-ask-about-topic/modal-ask-a
   styleUrls: ['./topics-list.component.css']
 })
 export class TopicsListComponent implements OnInit, OnDestroy {
+
+  currentUserType: UserType;
+  userTypes: typeof UserType = UserType;
 
   topics: TopicDataSimple[];
   topicSubscription: Subscription;
@@ -40,9 +45,11 @@ export class TopicsListComponent implements OnInit, OnDestroy {
     { field: TopicListTableFields.Tags, header: 'Tagi', sortable: false }
   ];
 
-  constructor(private dataService: DataService, private toastService: ToastrService, private modalService: NgbModal) { }
+  constructor(private dataService: DataService, private toastService: ToastrService, private modalService: NgbModal,
+              private roleService: RoleGuardService) { }
 
   ngOnInit() {
+    this.currentUserType = this.roleService.getUserType();
     this.topicSubscription = this.dataService.getTopics().
     pipe(
       catchError(err => {
