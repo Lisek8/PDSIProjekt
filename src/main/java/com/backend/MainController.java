@@ -33,6 +33,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Controller for all non-authorization endpoints
+ */
 @Controller
 @SpringBootApplication
 @RequestMapping("/rest-services")
@@ -111,7 +114,7 @@ public class MainController extends SpringBootServletInitializer {
 
     @GetMapping("/topic")
     @ResponseBody
-    //@PreAuthorize("hasAuthority('LECTURER') or hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('LECTURER') or hasAuthority('ADMIN')")
     TopicDataFull getTopic(int id) {
         UserPrincipal userPrincipal = getPrincipal();
         boolean isStudent = isStudent(userPrincipal);
@@ -153,50 +156,39 @@ public class MainController extends SpringBootServletInitializer {
     }
 
     @PutMapping("/topic")
-    void createTopic(TopicDataFull full) {
-        Topic topic = topicRepo.findById(full.getId());
-        if (full.getFaculty() != null)
-            topic.setFaculty(full.getFaculty());
-        if (!full.getLecturer().equals(lecturerRepo.findById(topic.getLecturerId()).getName()))
-            throw new RuntimeException("Nie mozna zmienic imienia wykładowcy");
-        topic.setType(full.getType());
-        if (full.getTopic() != null)
-            topic.setTopic(full.getTopic());
-        if (full.getDescription() != null)
-            topic.setDescription(full.getDescription());
-        if (topic.getTags() != null)
-            topic.setTags(String.join(",", full.getTags()));
-        topic.setStatus(full.getStatus());
+    @PreAuthorize("hasAuthority('LECTURER') or hasAuthority('ADMIN')")
+    void createTopic(int id, String topicName, String status, String type, String date, String description, String[] tags) {
+        Topic topic = topicRepo.findById(id);
+        UserPrincipal userPrincipal = getPrincipal();
+        boolean isStudent = false;
+        if (!userPrincipal.getUserType().equals("admin")) {
+            int userId = getId(userPrincipal, isStudent);
+
+            if (topic == null || topic.getLecturerId() != userId)
+                throw new RuntimeException("Brak dostępu do tematu");
+        }
+
+        topic.setType(Type.valueOf(type));
+        topic.setTopic(topicName);
+        if (description != null)
+            topic.setDescription(description);
+        if (tags != null)
+            topic.setTags(String.join(",", tags));
+        topic.setStatus(Status.valueOf(status));
         SimpleDateFormat formatter2 = new SimpleDateFormat("yyyy-MM-dd");
-        if (full.getDate() != null) {
+        if (date != null) {
             try {
-                topic.setDate(formatter2.parse(full.getDate()));
+                topic.setDate(formatter2.parse(date));
             } catch (ParseException e) {
                 throw new RuntimeException("Podano zły format daty(wymagany yyyy-MM-dd)");
             }
         }
-        if (full.getArrangements() != null)
-            topic.setArrangements(full.getArrangements());
-        if (full.getFiles() != null)
-            topic.setFiles(String.join(",", full.getFiles()));
-        List<AcceptanceRequest> acceptanceList = acceptanceRequestRepo.findAllByTopicId(topic.getId());
-        if (full.getAcceptanceRequests().length < acceptanceList.size()) {
-            if (full.getAcceptanceRequests().length == 0 && acceptanceList.size() > 0) {
-                topic.setStatus(Status.Available);
-            }
-            for (RequestSender sender : full.getAcceptanceRequests()) {
-                AcceptanceRequest request = acceptanceRequestRepo.findById(sender.getId());
-                acceptanceList.remove(request);
-            }
-            for (AcceptanceRequest request : acceptanceList) {
-                acceptanceRequestRepo.deleteById(request.getId());
-            }
-        }
+
         topicRepo.save(topic);
     }
 
     @PostMapping("/topic")
-    //@PreAuthorize("hasAuthority('LECTURER')")
+    @PreAuthorize("hasAuthority('LECTURER')")
     void createTopic(Type type, String topic, String description,
                      String[] tags) {
         UserPrincipal userPrincipal = getPrincipal();
@@ -206,7 +198,7 @@ public class MainController extends SpringBootServletInitializer {
     }
 
     @DeleteMapping("/topic")
-    //@PreAuthorize("hasAuthority('LECTURER') or hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('LECTURER') or hasAuthority('ADMIN')")
     void deleteTopic(int id) {
         Topic topicToDelete = topicRepo.findById(id);
         if (topicToDelete != null)
@@ -215,20 +207,20 @@ public class MainController extends SpringBootServletInitializer {
 
     @GetMapping("/users")
     @ResponseBody
-    //@PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     List<User> getUsers() {
         return userRepo.findAll();
     }
 
     @DeleteMapping("/users")
-    //@PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     void deleteUser(int id) {
         userRepo.deleteById(id);
     }
 
     @GetMapping("/acceptancerequest")
     @ResponseBody
-    //@PreAuthorize("hasAuthority('LECTURER') or hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('LECTURER') or hasAuthority('ADMIN')")
     List<RequestSender> requests(int id) {
         UserPrincipal principal = getPrincipal();
         if (!principal.getUserType().equals("admin") && lecturerRepo.findByUserId(principal.getId()).getId() != topicRepo.findById(id)
@@ -239,7 +231,7 @@ public class MainController extends SpringBootServletInitializer {
     }
 
     @PostMapping("/acceptancerequest")
-    //@PreAuthorize("hasAuthority('STUDENT')")
+    @PreAuthorize("hasAuthority('STUDENT')")
     void postRequest(int id) {
         UserPrincipal principal = getPrincipal();
         AcceptanceRequest acceptanceRequest = new AcceptanceRequest(id, studentRepo.findByUserId(principal.getId()).getId());
@@ -254,7 +246,7 @@ public class MainController extends SpringBootServletInitializer {
     }
 
     @PostMapping("/acceptancerequestdecision")
-    //@PreAuthorize("hasAuthority('LECTURER')")
+    @PreAuthorize("hasAuthority('LECTURER')")
     void decideOnRequest(int id, boolean decision) {
         Topic topic = topicRepo.findById(acceptanceRequestRepo.findById(id).getTopicId());
         if (!decision && acceptanceRequestRepo.findAllByTopicId(topic.getId()).size() == 1) {
@@ -272,7 +264,7 @@ public class MainController extends SpringBootServletInitializer {
     }
 
     @GetMapping("/conversations")
-    //@PreAuthorize("hasAuthority('LECTURER') or hasAuthority('STUDENT')")
+    @PreAuthorize("hasAuthority('LECTURER') or hasAuthority('STUDENT')")
     @ResponseBody
     List<ConversationSimple> showConversations() {
         UserPrincipal principal = getPrincipal();
@@ -378,8 +370,11 @@ public class MainController extends SpringBootServletInitializer {
 
     @GetMapping("/user")
     @ResponseBody
-    UserPrincipal hello() {
-        return getPrincipal();
+    String getUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserPrincipal)
+            return (((UserPrincipal) principal)).getUserType();
+        else return "guest";
     }
 
     public UserPrincipal getPrincipal() {
