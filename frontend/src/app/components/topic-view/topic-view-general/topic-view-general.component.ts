@@ -5,6 +5,7 @@ import { TopicType } from 'src/app/enums/topic-type.enum';
 import { TopicStatus } from 'src/app/enums/topic-status.enum';
 import { UserType } from 'src/app/enums/user-type.enum';
 import { RoleGuardService } from 'src/app/services/role-guard/role-guard.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-topic-view-general',
@@ -12,18 +13,20 @@ import { RoleGuardService } from 'src/app/services/role-guard/role-guard.service
   styleUrls: ['./topic-view-general.component.css']
 })
 export class TopicViewGeneralComponent implements OnInit {
-  @Input() data: TopicDataFull;
+  @Input() data?: TopicDataFull;
   dataEditCopy: TopicDataFull;
   topicTags: string;
   topicTypes: typeof TopicType = TopicType;
   topicStatuses: typeof TopicStatus = TopicStatus;
+  subject: BehaviorSubject<UserType> = this.roleService.getUserType();
   currentUserType: UserType;
   userTypes: typeof UserType = UserType;
 
   constructor(private modalService: NgbModal, private roleService: RoleGuardService) { }
 
   ngOnInit() {
-    this.currentUserType = this.roleService.getUserType();
+    this.currentUserType = this.subject.getValue();
+    this.subject.subscribe(value => this.currentUserType = value);
   }
 
   open(content) {

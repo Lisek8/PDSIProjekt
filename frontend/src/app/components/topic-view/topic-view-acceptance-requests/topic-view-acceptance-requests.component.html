@@ -1,27 +1,29 @@
-<p-table [columns]="cols" [value]="data.acceptanceRequests" [tableStyleClass]="'table table-bordered'" dataKey="topic">
-  <ng-template pTemplate="header" let-columns>
-    <tr class="text-center">
-      <th *ngFor="let col of columns" [pSortableColumn]="col.field">
-        {{col.header}}
-        <p-sortIcon [field]="col.field"></p-sortIcon>
-      </th>
-    </tr>
-  </ng-template>
-  <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
-    <tr>
-      <td *ngFor="let col of columns" class="align-middle text-center">
-        <span *ngIf="col.header === acceptanceHeaders.Action; else notActionBlock">
-          <button class="btn btn-success" (click)="setAcceptanceStudent(rowData['student'], rowData['id']);open(content)"><i class="fas fa-check"></i></button>
-          &nbsp;&nbsp;
-          <button class="btn btn-danger" (click)="setAcceptanceStudent(rowData['student'], rowData['id']);open(rejectContent)"><i class="fas fa-times"></i></button>
-        </span>
-        <ng-template #notActionBlock>
-          <span>{{rowData[col.field]}}</span>
-        </ng-template>
-      </td>
-    </tr>
-  </ng-template>
-</p-table>
+<span *ngIf="data != null">
+  <p-table [columns]="cols" [value]="data.acceptanceRequests" [tableStyleClass]="'table table-bordered'" dataKey="topic">
+    <ng-template pTemplate="header" let-columns>
+      <tr class="text-center">
+        <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+          {{col.header}}
+          <p-sortIcon [field]="col.field"></p-sortIcon>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+      <tr>
+        <td *ngFor="let col of columns" class="align-middle text-center">
+          <span *ngIf="col.header === acceptanceHeaders.Action; else notActionBlock">
+            <button class="btn btn-success" (click)="setAcceptanceStudent(rowData['student'], rowData['id']);open(content)"><i class="fas fa-check"></i></button>
+            &nbsp;&nbsp;
+            <button class="btn btn-danger" (click)="setAcceptanceStudent(rowData['student'], rowData['id']);open(rejectContent)"><i class="fas fa-times"></i></button>
+          </span>
+          <ng-template #notActionBlock>
+            <span>{{rowData[col.field]}}</span>
+          </ng-template>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</span>
 
 <ng-template #content let-modal>
   <div class="modal-header">

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { DataService } from '../../services/data/data.service';
 import { Dashboard } from '../../models/dashboard';
 import { ToastrService } from 'ngx-toastr';
+import { catchError } from 'rxjs/operators';
+import { EMPTY } from 'rxjs';
 
 @Component({
   selector: 'app-lecturer-panel',
@@ -46,14 +48,23 @@ export class LecturerPanelComponent implements OnInit {
   constructor(private dataService: DataService, private toastService: ToastrService) { }
 
   ngOnInit() {
-    this.dataService.getDashboardData().subscribe(
+    this.pageData = {
+      availableTopics: 0,
+      inProgressTopics: 0,
+      actionRequiredTopics: 0,
+      finishedTopics: 0,
+      newMessages: 0
+    };
+    this.dataService.getDashboardData().pipe(
+      catchError(err => {
+        this.toastService.error('Nie udało się pobrać danych z serwera. Spróbuj ponownie za chwilę.', 'Błąd');
+        return EMPTY;
+      })
+    ).subscribe(
       res => {
         this.pageData = res;
         this.data.datasets[0].data = [this.pageData.availableTopics, this.pageData.inProgressTopics,
         this.pageData.actionRequiredTopics, this.pageData.finishedTopics];
-      },
-      err => {
-        this.toastService.error('Nie udało się pobrać danych z serwera. Spróbuj ponownie za chwilę.', 'Błąd');
       }
     );
   }

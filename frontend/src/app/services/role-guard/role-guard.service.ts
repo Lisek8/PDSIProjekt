@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { UserType } from 'src/app/enums/user-type.enum';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RoleGuardService implements CanActivate {
 
-  currentUserType: UserType = UserType.Lecturer;
+  currentUser: BehaviorSubject<UserType> = new BehaviorSubject<UserType>(UserType.Guest);
   routesActivationArray = [
     {
       path: 'personal',
@@ -40,7 +41,7 @@ export class RoleGuardService implements CanActivate {
     boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
     let found = false;
     this.routesActivationArray.forEach(routeToCheck => {
-      if (routeToCheck.path === route.routeConfig.path && routeToCheck.forRoles.includes(this.currentUserType)) {
+      if (routeToCheck.path === route.routeConfig.path && routeToCheck.forRoles.includes(this.currentUser.getValue())) {
         found = true;
       }
     });
@@ -52,23 +53,28 @@ export class RoleGuardService implements CanActivate {
   }
 
   async login(username: string, password: string) {
-    return this.http.post(environment.restServicesPath + 'login?username=' + username + '&password=' + password, {});
+    await this.http.post(environment.restServicesPath + 'login?username=' + username + '&password=' + password, {}).subscribe();
+    console.warn('1st checkpoint');
+    await this.getUserTypeFromBackend();
+    console.warn('2nd checkpoint');
   }
 
-  getUserType() {
-    // this.http.get(environment.restServicesPath + 'user', {})
-    //   .subscribe((value: string) => {
-    //     this.currentUserType = UserType[value];
-    //   });
-    return this.currentUserType;
+  async getUserTypeFromBackend() {
+    this.http.get(environment.restServicesPath + 'user', {})
+    .pipe(
+      tap(value => console.log('getUserTypeFromBackend: ' + value))
+    )
+    .subscribe((value: UserType) => this.currentUser.next(value));
   }
 
-  resetUserType(): void {
-    this.currentUserType = UserType.Guest;
+  getUserType(): BehaviorSubject<UserType> {
+    this.getUserTypeFromBackend();
+    return this.currentUser;
   }
 
-  logout(): void {
-    this.http.post(environment.restServicesPath + 'logout', {});
+  async logout() {
+    await this.http.post(environment.restServicesPath + 'logout', {}).subscribe();
+    this.getUserTypeFromBackend();
   }
 
 }

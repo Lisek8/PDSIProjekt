@@ -1,25 +1,27 @@
-<div class="p-1">
-  <b>Temat:</b> {{data.topic}}
-</div>
-<div class="p-1">
-  <b>Status:</b> {{data.status}}
-</div>
-<div class="p-1">
-  <b>Typ pracy:</b> {{data.type}}
-</div>
-<div class="p-1">
-  <b>Realizator:</b> {{data.student}}
-</div>
-<div class="p-1">
-  <b>Data obrony:</b>
-  {{data.examDate.getDate() + '-' + (data.examDate.getMonth() + 1) + '-' + data.examDate.getFullYear()}}
-</div>
-<div class="p-1">
-  <b>Opis</b>
-  <div class="text-justify">
-    {{data.description}}
+<span *ngIf="data != null">
+  <div class="p-1">
+    <b>Temat:</b> {{data.topic}}
   </div>
-</div>
+  <div class="p-1">
+    <b>Status:</b> {{data.status}}
+  </div>
+  <div class="p-1">
+    <b>Typ pracy:</b> {{data.type}}
+  </div>
+  <div class="p-1">
+    <b>Realizator:</b> {{data.student}}
+  </div>
+  <div class="p-1">
+    <b>Data obrony:</b>
+    {{data.examDate.getDate() + '-' + (data.examDate.getMonth() + 1) + '-' + data.examDate.getFullYear()}}
+  </div>
+  <div class="p-1">
+    <b>Opis</b>
+    <div class="text-justify">
+      {{data.description}}
+    </div>
+  </div>
+</span>
 
 <ng-template #content let-modal>
   <div class="modal-header">

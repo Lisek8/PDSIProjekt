@@ -7,6 +7,9 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TopicType } from 'src/app/enums/topic-type.enum';
 import { UserType } from 'src/app/enums/user-type.enum';
 import { RoleGuardService } from 'src/app/services/role-guard/role-guard.service';
+import { BehaviorSubject, EMPTY } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-personal-topics',
@@ -27,6 +30,7 @@ export class PersonalTopicsComponent implements OnInit {
   newTopicInfo: TopicDataSimple;
   topicTags: string;
 
+  subject: BehaviorSubject<UserType> = this.roleService.getUserType();
   currentUserType: UserType;
   userTypes: typeof UserType = UserType;
 
@@ -40,11 +44,20 @@ export class PersonalTopicsComponent implements OnInit {
     { field: PersonalTopicsTableHeaders.Messages, header: 'Nowych wiadomośći' }
   ];
 
-  constructor(private dataService: DataService, private modalService: NgbModal, private roleService: RoleGuardService) { }
+  constructor(private dataService: DataService, private modalService: NgbModal, private roleService: RoleGuardService,
+              private toastService: ToastrService) { }
 
   ngOnInit() {
-    this.currentUserType = this.roleService.getUserType();
-    this.dataService.getPersonalTopics().forEach((topics) => this.topics = topics);
+    this.topics = [];
+    this.currentUserType = this.subject.getValue();
+    this.subject.subscribe(value => this.currentUserType = value);
+    this.dataService.getPersonalTopics()
+    .pipe(
+      catchError(err => {
+        this.toastService.error('Nie udało się pobrać listy tematów', 'Błąd');
+        return EMPTY;
+      })
+    ).subscribe((topics) => this.topics = topics);
     this.populateFilters();
   }
 
