@@ -1,6 +1,7 @@
 package com.backend;
 
 import com.backend.Json.*;
+import com.backend.db.UserType;
 import com.backend.db.Status;
 import com.backend.db.Type;
 import com.backend.db.AcceptanceRequest.AcceptanceRequest;
@@ -370,11 +371,14 @@ public class MainController extends SpringBootServletInitializer {
 
     @GetMapping("/user")
     @ResponseBody
-    String getUser() {
+    UserType getUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof UserPrincipal)
-            return (((UserPrincipal) principal)).getUserType();
-        else return "guest";
+        String type = "GUEST";
+        if (principal instanceof UserPrincipal) {
+            type = ((UserPrincipal) principal).getUserType();
+            type = type.toUpperCase();
+        }
+        return UserType.valueOf(type);
     }
 
     public UserPrincipal getPrincipal() {
