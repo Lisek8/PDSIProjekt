@@ -1,6 +1,7 @@
 package com.backend.security;
 
 
+import com.backend.db.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -111,6 +113,13 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
             public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
                 //httpServletResponse.getWriter().append("OK");
                 httpServletResponse.setStatus(200);
+                Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                String type = "GUEST";
+                if (principal instanceof UserPrincipal) {
+                    type = ((UserPrincipal) principal).getUserType();
+                    type = type.toUpperCase();
+                }
+                httpServletResponse.getWriter().append(type);
             }
         };
     }

@@ -190,13 +190,14 @@ public class MainController extends SpringBootServletInitializer {
 
     @PostMapping("/topic")
     @PreAuthorize("hasAuthority('LECTURER')")
-    void createTopic(Type type, String topic, String description,
-                     String[] tags) {
+    void createTopic(Type type, String topic, String description, String[] tags) {
         UserPrincipal userPrincipal = getPrincipal();
         Lecturer lecturer = lecturerRepo.findByUserId(userPrincipal.getId());
         String tag = String.join(",", tags);
-        topicRepo.save(new Topic(userPrincipal.getFaculty(), lecturer.getId(), type, topic, description, tag));
+        Topic t = new Topic(userPrincipal.getFaculty(), lecturer.getId(), type, topic, description, tag);
+        topicRepo.save(t);
     }
+
 
     @DeleteMapping("/topic")
     @PreAuthorize("hasAuthority('LECTURER') or hasAuthority('ADMIN')")
