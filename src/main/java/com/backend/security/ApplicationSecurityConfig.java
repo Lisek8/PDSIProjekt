@@ -95,6 +95,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
             @Override
             public void onAuthenticationFailure(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
                 httpServletResponse.setStatus(401);
+                httpServletResponse.getWriter().append("GUEST");
+
             }
         };
     }
