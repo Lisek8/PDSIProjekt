@@ -49,11 +49,16 @@ export class PersonalTopicsComponent implements OnInit {
   }
 
   open(content) {
+    this.newTopicInfo = {
+      id: -1,
+      faculty: '',
+      lecturer: '',
+      type: TopicType.Engineer,
+      topic: '',
+      description: '',
+      tags: []
+    };
     this.topicTags = '';
-    this.newTopicInfo.description = '';
-    this.newTopicInfo.tags = [];
-    this.newTopicInfo.type = TopicType.Engineer;
-    this.newTopicInfo.description = '';
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'xl'});
   }
 

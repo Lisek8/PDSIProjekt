@@ -1,9 +1,10 @@
 <h2>Wiadomości</h2>
 <div>
   <h5>Tematy</h5>
-  <p-table [columns]="cols" [value]="conversations" [tableStyleClass]="'table table-bordered'" dataKey="conversation">
+  <p-table [columns]="cols" [value]="conversations" [tableStyleClass]="'table table-bordered'" dataKey="id" rowExpandMode="single">
     <ng-template pTemplate="header" let-columns>
       <tr class="text-center">
+        <th style="min-width: 35px; width: 50px;"></th>
         <th *ngFor="let col of columns" [pSortableColumn]="col.field">
           {{col.header}}
           <p-sortIcon *ngIf="col.sortable" [field]="col.field"></p-sortIcon>
@@ -12,6 +13,11 @@
     </ng-template>
     <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
       <tr>
+        <td class="align-middle text-center">
+          <a href="#" [pRowToggler]="rowData">
+            <i [ngClass]="expanded ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
+          </a>
+        </td>
         <td *ngFor="let col of columns" [ngSwitch]="col.field" class="align-middle text-center">
           <span *ngSwitchCase="'student'">{{ rowData.recipients.student }}</span>
           <span *ngSwitchCase="'lecturer'">{{ rowData.recipients.lecturer }}</span>
@@ -19,6 +25,30 @@
             <a routerLink="/topicview/{{rowData.topicId}}"><button class="btn btn-primary">Otwórz</button></a>
           </span>
           <span *ngSwitchDefault>{{ rowData[col.field] }}</span>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+      <tr>
+        <td [attr.colspan]="columns.length + 1">
+          <div class="container-fluid p-2 m-2" style="font-size:16px;">
+            <div class="container-fluid mt-1 mb-1 message" *ngFor="let message of rowData.messages">
+              <div class="p-1">
+                <h6 class="font-weight-bold">
+                  {{ message.author }}
+                  <small class="text-muted">{{message.date.getDate() + '-' + (message.date.getMonth() + 1) + '-' + message.date.getFullYear() + ' ' + message.date.getHours() + ':' + message.date.getMinutes()}}</small>
+                </h6>
+              </div>
+              <div class="p-1">
+                {{ message.content }}
+              </div>
+            </div>
+            <div class="container-fluid p-2 m-2">
+              <textarea class="container-fluid" [(ngModel)]="messageContent" pInputTextarea></textarea>
+              <button class="btn btn-primary container-fluid" (click)="sendMessage()"
+                [disabled]="disableSend">Wyślij</button>
+            </div>
+          </div>
         </td>
       </tr>
     </ng-template>

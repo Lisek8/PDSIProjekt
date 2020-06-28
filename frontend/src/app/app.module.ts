@@ -20,6 +20,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 // tslint:disable-next-line:max-line-length
 import { ModalReserveConfirmationComponent } from './components/topics-list/modal-reserve-confirmation/modal-reserve-confirmation.component';
 import { ModalAskAboutTopicComponent } from './components/topics-list/modal-ask-about-topic/modal-ask-about-topic.component';
+import { LoginComponent } from './components/login/login.component';
 
 @NgModule({
    declarations: [
@@ -30,7 +31,8 @@ import { ModalAskAboutTopicComponent } from './components/topics-list/modal-ask-
       ConversationListComponent,
       LecturerPanelComponent,
       ModalReserveConfirmationComponent,
-      ModalAskAboutTopicComponent
+      ModalAskAboutTopicComponent,
+      LoginComponent
    ],
    imports: [
       BrowserModule,

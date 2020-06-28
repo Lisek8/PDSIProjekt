@@ -73,7 +73,7 @@
                 {{rowData.description}}
               </div>
             </div>
-            <div class="p-1 d-flex flex-row-reverse justify-content-start">
+            <div *ngIf="currentUserType === userTypes.User" class="p-1 d-flex flex-row-reverse justify-content-start">
               <span class="ml-2">
                 <button type="button" class="btn btn-info" (click)="openAskAboutModal(rowData)">Zapytaj o temat</button>
               </span>

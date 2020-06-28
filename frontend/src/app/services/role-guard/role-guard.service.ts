@@ -2,13 +2,15 @@ import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { UserType } from 'src/app/enums/user-type.enum';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RoleGuardService implements CanActivate {
 
-  currentUserType: UserType = UserType.User;
+  currentUserType: UserType = UserType.Lecturer;
   routesActivationArray = [
     {
       path: 'personal',
@@ -32,7 +34,7 @@ export class RoleGuardService implements CanActivate {
     }
   ];
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private http: HttpClient) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot):
     boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
@@ -49,12 +51,24 @@ export class RoleGuardService implements CanActivate {
     return false;
   }
 
-  getUserType(): UserType {
+  async login(username: string, password: string) {
+    return this.http.post(environment.restServicesPath + 'login?username=' + username + '&password=' + password, {});
+  }
+
+  getUserType() {
+    // this.http.get(environment.restServicesPath + 'user', {})
+    //   .subscribe((value: string) => {
+    //     this.currentUserType = UserType[value];
+    //   });
     return this.currentUserType;
   }
 
   resetUserType(): void {
     this.currentUserType = UserType.Guest;
+  }
+
+  logout(): void {
+    this.http.post(environment.restServicesPath + 'logout', {});
   }
 
 }
