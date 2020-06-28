@@ -1,6 +1,6 @@
 export enum UserType {
-    Guest = 'gość',
-    User = 'użytkownik',
-    Lecturer = 'wykładowca',
-    Admin = 'admin'
+    Guest = 'GUEST',
+    User = 'USER',
+    Lecturer = 'LECTURER',
+    Admin = 'ADMIN'
 }

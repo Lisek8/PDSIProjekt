@@ -3,7 +3,7 @@ import { SelectItem } from 'primeng/api';
 import { DataService } from '../../services/data/data.service';
 import { TopicDataSimple } from '../../models/topic-data';
 import { TopicListTableFields } from '../../enums/topic-list-table-headers.enum';
-import { Subscription, EMPTY } from 'rxjs';
+import { Subscription, EMPTY, BehaviorSubject } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { catchError } from 'rxjs/operators';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
@@ -19,6 +19,7 @@ import { RoleGuardService } from 'src/app/services/role-guard/role-guard.service
 })
 export class TopicsListComponent implements OnInit, OnDestroy {
 
+  subject: BehaviorSubject<UserType> = this.roleService.getUserType();
   currentUserType: UserType;
   userTypes: typeof UserType = UserType;
 
@@ -49,15 +50,17 @@ export class TopicsListComponent implements OnInit, OnDestroy {
               private roleService: RoleGuardService) { }
 
   ngOnInit() {
-    this.currentUserType = this.roleService.getUserType();
-    this.topicSubscription = this.dataService.getTopics().
-    pipe(
+    this.topics = [];
+    this.currentUserType = this.subject.getValue();
+    this.subject.subscribe(value => this.currentUserType = value);
+    this.topicSubscription = this.dataService.getTopics()
+    .pipe(
       catchError(err => {
         this.toastService.error('Nie udało się pobrać listy tematów', 'Błąd');
         return EMPTY;
       })
-    ).
-    subscribe((topics) => this.topics = topics);
+    )
+    .subscribe((topics) => this.topics = topics);
     this.populateFilters();
   }
 

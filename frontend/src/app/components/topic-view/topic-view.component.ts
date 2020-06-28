@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { TopicViewTabs } from '../../enums/topic-view-tabs.enum';
 import { TopicDataFull } from '../../models/topic-data';
 import { DataService } from '../../services/data/data.service';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject, EMPTY } from 'rxjs';
 import { RoleGuardService } from 'src/app/services/role-guard/role-guard.service';
 import { UserType } from 'src/app/enums/user-type.enum';
+import { catchError } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -18,16 +20,23 @@ export class TopicViewComponent implements OnInit {
   activeTab: any;
 
   topicInfo: Observable<TopicDataFull>;
+  subject: BehaviorSubject<UserType> = this.roleService.getUserType();
   currentUserType: UserType;
   userTypes: typeof UserType = UserType;
 
 
-  constructor(private dataService: DataService, private roleService: RoleGuardService) { }
+  constructor(private dataService: DataService, private roleService: RoleGuardService, private toastService: ToastrService) { }
 
   ngOnInit() {
-    this.topicInfo = this.dataService.getTopicInfo(/* topic id here */0);
+    this.topicInfo = this.dataService.getTopicInfo(/* topic id here */0).pipe(
+      catchError(() => {
+        this.toastService.error('Nie udało się pobrać danych tematu');
+        return EMPTY;
+      })
+    );
     this.activeTab = this.tabs.General;
-    this.currentUserType = this.roleService.getUserType();
+    this.currentUserType = this.subject.getValue();
+    this.subject.subscribe(value => this.currentUserType = value);
   }
 
   setTab(tabToActivate: TopicViewTabs) {

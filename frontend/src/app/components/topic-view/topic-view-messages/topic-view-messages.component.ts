@@ -4,6 +4,7 @@ import { MessageTableLecturerHeaders } from 'src/app/enums/message-table-lecture
 import { ToastrService } from 'ngx-toastr';
 import { UserType } from 'src/app/enums/user-type.enum';
 import { RoleGuardService } from 'src/app/services/role-guard/role-guard.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-topic-view-messages',
@@ -14,6 +15,7 @@ export class TopicViewMessagesComponent implements OnInit {
   @Input() data: TopicDataFull;
   messageContent: string;
   disableSend: boolean;
+  subject: BehaviorSubject<UserType> = this.roleService.getUserType();
   currentUserType: UserType;
   userTypes: typeof UserType = UserType;
 
@@ -26,7 +28,8 @@ export class TopicViewMessagesComponent implements OnInit {
   ngOnInit() {
     this.messageContent = '';
     this.disableSend = false;
-    this.currentUserType = this.roleService.getUserType();
+    this.currentUserType = this.subject.getValue();
+    this.subject.subscribe(value => this.currentUserType = value);
   }
 
   async sendMessage() {
