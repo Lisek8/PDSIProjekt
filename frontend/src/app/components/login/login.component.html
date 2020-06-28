@@ -3,12 +3,12 @@
   <form>
     <div class="form-group">
       <label for="login">Login</label>
-      <input type="text" class="form-control" id="login" aria-describedby="login" placeholder="Login">
+      <input type="text" class="form-control" name="username" id="login" aria-describedby="login" placeholder="Login" [(ngModel)]="username">
     </div>
     <div class="form-group">
       <label for="password">Hasło</label>
-      <input type="password" class="form-control" id="password" placeholder="Hasło">
+      <input type="password" class="form-control" name="password" id="password" placeholder="Hasło" [(ngModel)]="password">
     </div>
-    <button type="submit" class="btn btn-primary btn-lg btn-block">Zaloguj</button>
+    <button type="button" class="btn btn-primary btn-lg btn-block" (click)="login()">Zaloguj</button>
   </form>
 </div>

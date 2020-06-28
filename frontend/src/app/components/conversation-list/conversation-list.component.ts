@@ -4,6 +4,7 @@ import { ConversationSimple } from '../../models/conversation';
 import { DataService } from '../../services/data/data.service';
 import { RoleGuardService } from 'src/app/services/role-guard/role-guard.service';
 import { UserType } from 'src/app/enums/user-type.enum';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-conversation-list',
@@ -14,10 +15,12 @@ export class ConversationListComponent implements OnInit {
   conversations: ConversationSimple[];
   currentUserType: UserType;
   userTypes: typeof UserType = UserType;
+  messageContent: string;
+  disableSend: boolean;
 
   cols: any[] = [];
 
-  constructor(private dataService: DataService, private roleService: RoleGuardService) { }
+  constructor(private dataService: DataService, private roleService: RoleGuardService, private toastService: ToastrService) { }
 
   ngOnInit() {
     this.dataService.getConversations().forEach((convos) => this.conversations = convos);
@@ -30,6 +33,17 @@ export class ConversationListComponent implements OnInit {
       { field: ConversationTableHeaders.Messages, header: 'Nowych wiadomości', sortable: true },
       { field: ConversationTableHeaders.Actions, header: '', sortable: false }
     ];
+  }
+
+  async sendMessage() {
+    this.disableSend = true;
+    this.toastService.info('Wysyłanie wiadomości', 'Info');
+    this.toastService.warning('Funkcja w fazie testów', 'Ostrzeżenie');
+    if (this.messageContent.length > 0) {
+      this.toastService.success('Wiadomość pomyślnie wysłana', 'Sukces');
+    }
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    this.disableSend = false;
   }
 
 }
