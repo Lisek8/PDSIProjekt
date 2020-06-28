@@ -8,7 +8,7 @@ import { TopicsListComponent } from './components/topics-list/topics-list.compon
 import { TableModule } from 'primeng/table';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { PersonalTopicsComponent } from './components/personal-topics/personal-topics.component';
 import { TopicViewModule } from './components/topic-view/topic-view.module';
 import { ConversationListComponent } from './components/conversation-list/conversation-list.component';
