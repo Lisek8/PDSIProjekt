@@ -4,7 +4,6 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { UserType } from 'src/app/enums/user-type.enum';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -52,18 +51,12 @@ export class RoleGuardService implements CanActivate {
     return false;
   }
 
-  async login(username: string, password: string) {
-    await this.http.post(environment.restServicesPath + 'login?username=' + username + '&password=' + password, {}).subscribe();
-    console.warn('1st checkpoint');
-    await this.getUserTypeFromBackend();
-    console.warn('2nd checkpoint');
+  login(username: string, password: string) {
+    return this.http.post(environment.restServicesPath + 'login?username=' + username + '&password=' + password, {});
   }
 
   async getUserTypeFromBackend() {
     this.http.get(environment.restServicesPath + 'user', {})
-    .pipe(
-      tap(value => console.log('getUserTypeFromBackend: ' + value))
-    )
     .subscribe((value: UserType) => this.currentUser.next(value));
   }
 
@@ -73,8 +66,15 @@ export class RoleGuardService implements CanActivate {
   }
 
   async logout() {
-    await this.http.post(environment.restServicesPath + 'logout', {}).subscribe();
+    this.http.post(environment.restServicesPath + 'logout', {}).subscribe();
+    this.deleteSession();
     this.getUserTypeFromBackend();
   }
+
+  private deleteSession() {
+    const d = new Date();
+    d.setTime(d.getTime() + 24 * 60 * 60 * 1000 * -1);
+    document.cookie = 'JSESSIONID=;path=/;expires=' + d.toUTCString();
+}
 
 }

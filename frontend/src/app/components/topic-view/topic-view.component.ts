@@ -7,6 +7,7 @@ import { RoleGuardService } from 'src/app/services/role-guard/role-guard.service
 import { UserType } from 'src/app/enums/user-type.enum';
 import { catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -25,10 +26,11 @@ export class TopicViewComponent implements OnInit {
   userTypes: typeof UserType = UserType;
 
 
-  constructor(private dataService: DataService, private roleService: RoleGuardService, private toastService: ToastrService) { }
+  constructor(private dataService: DataService, private roleService: RoleGuardService, private toastService: ToastrService,
+              private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.topicInfo = this.dataService.getTopicInfo(/* topic id here */0).pipe(
+    this.topicInfo = this.dataService.getTopicInfo(this.route.snapshot.paramMap.get('id')).pipe(
       catchError(() => {
         this.toastService.error('Nie udało się pobrać danych tematu');
         return EMPTY;

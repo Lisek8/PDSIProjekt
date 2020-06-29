@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ConversationTableHeaders } from '../../enums/ConversationTableHeaders.enum';
-import { ConversationSimple } from '../../models/conversation';
 import { DataService } from '../../services/data/data.service';
 import { RoleGuardService } from 'src/app/services/role-guard/role-guard.service';
 import { UserType } from 'src/app/enums/user-type.enum';
 import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, EMPTY } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { Conversation } from 'src/app/models/conversation';
 
 @Component({
   selector: 'app-conversation-list',
@@ -14,7 +14,7 @@ import { catchError } from 'rxjs/operators';
   styleUrls: ['./conversation-list.component.css']
 })
 export class ConversationListComponent implements OnInit {
-  conversations: ConversationSimple[];
+  conversations: Conversation[];
   subject: BehaviorSubject<UserType> = this.roleService.getUserType();
   currentUserType: UserType;
   userTypes: typeof UserType = UserType;
@@ -29,10 +29,10 @@ export class ConversationListComponent implements OnInit {
     this.dataService.getConversations()
     .pipe(
       catchError(err => {
-        this.toastService.error('Nie udało się pobrać listy tematów', 'Błąd');
+        this.toastService.error('Nie udało się pobrać listy wiadomości', 'Błąd');
         return EMPTY;
       })
-    ).subscribe((convos: ConversationSimple[]) => this.conversations = convos);
+    ).subscribe((convos: Conversation[]) => this.conversations = convos);
     this.currentUserType = this.subject.getValue();
     this.subject.subscribe(value => this.currentUserType = value);
     this.cols = [
@@ -45,15 +45,20 @@ export class ConversationListComponent implements OnInit {
     ];
   }
 
-  async sendMessage() {
+  async sendMessage(conversationId: number) {
     this.disableSend = true;
-    this.toastService.info('Wysyłanie wiadomości', 'Info');
-    this.toastService.warning('Funkcja w fazie testów', 'Ostrzeżenie');
-    if (this.messageContent.length > 0) {
-      this.toastService.success('Wiadomość pomyślnie wysłana', 'Sukces');
-    }
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    await this.dataService.sendMessage(conversationId, this.messageContent).toPromise().then(
+      success => {
+        this.toastService.success('Wiadomość pomyślnie wysłana', 'Sukces');
+        this.clearMessageContent();
+      },
+      error => this.toastService.error('Wystąpił błąd podczas wysyłania wiadomości', 'Błąd')
+    );
     this.disableSend = false;
+  }
+
+  clearMessageContent() {
+    this.messageContent = '';
   }
 
 }

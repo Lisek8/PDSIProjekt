@@ -14,13 +14,13 @@
     <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
       <tr>
         <td class="align-middle text-center">
-          <a href="#" [pRowToggler]="rowData">
+          <a href="#" [pRowToggler]="rowData" (click)="clearMessageContent()">
             <i [ngClass]="expanded ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
           </a>
         </td>
         <td *ngFor="let col of columns" [ngSwitch]="col.field" class="align-middle text-center">
-          <span *ngSwitchCase="'student'">{{ rowData.recipients.student }}</span>
-          <span *ngSwitchCase="'lecturer'">{{ rowData.recipients.lecturer }}</span>
+          <span *ngSwitchCase="'student'">{{ rowData.student }}</span>
+          <span *ngSwitchCase="'lecturer'">{{ rowData.lecturer }}</span>
           <span *ngSwitchCase="'actions'">
             <a routerLink="/topicview/{{rowData.topicId}}"><button class="btn btn-primary">Otwórz</button></a>
           </span>
@@ -36,7 +36,7 @@
               <div class="p-1">
                 <h6 class="font-weight-bold">
                   {{ message.author }}
-                  <small class="text-muted">{{message.date.getDate() + '-' + (message.date.getMonth() + 1) + '-' + message.date.getFullYear() + ' ' + message.date.getHours() + ':' + message.date.getMinutes()}}</small>
+                  <small class="text-muted">{{message.date}}</small>
                 </h6>
               </div>
               <div class="p-1">
@@ -45,7 +45,7 @@
             </div>
             <div class="container-fluid p-2 m-2">
               <textarea class="container-fluid" [(ngModel)]="messageContent" pInputTextarea></textarea>
-              <button class="btn btn-primary container-fluid" (click)="sendMessage()"
+              <button class="btn btn-primary container-fluid" (click)="sendMessage(rowData.id)"
                 [disabled]="disableSend">Wyślij</button>
             </div>
           </div>

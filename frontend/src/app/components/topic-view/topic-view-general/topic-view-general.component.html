@@ -13,7 +13,7 @@
   </div>
   <div class="p-1">
     <b>Data obrony:</b>
-    {{data.examDate.getDate() + '-' + (data.examDate.getMonth() + 1) + '-' + data.examDate.getFullYear()}}
+    {{data.examDate}}
   </div>
   <div class="p-1">
     <b>Opis</b>
@@ -55,7 +55,7 @@
       <div class="form-group">
         <label for="date">Data obrony</label>
         <div class="input-group">
-          <input id="date" class="form-control" name="date" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker #dp="ngbDatepicker" [(ngModel)]="dataEditCopy.examDate">
+          <input id="date" class="form-control" name="date" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker #dp="ngbDatepicker" [(ngModel)]="examDate">
           <div class="input-group-append">
             <button class="btn btn-outline-secondary calendar" (click)="dp.toggle()" type="button"></button>
           </div>
@@ -76,10 +76,25 @@
   </div>
 </ng-template>
 
+<ng-template #deleteModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Usuwanie tematu</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Czy na pewno chcesz usunąć ten temat?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" (click)="modal.close()">Anuluj</button>
+    <button type="button" class="btn btn-danger" (click)="modal.close();deleteTopic()">Usuń</button>
+  </div>
+</ng-template>
 
 <div class="p-1 d-flex flex-row-reverse justify-content-start" *ngIf="currentUserType === userTypes.Lecturer || currentUserType === userTypes.Admin">
   <span class="ml-2">
-    <button class="btn btn-primary" (click)="open(content)">Edytuj</button>
-    <button class="btn btn-danger ml-2" (click)="open(content)">Usuń temat</button>
+    <button class="btn btn-primary" (click)="prepareToEdit();open(content)">Edytuj</button>
+    <button class="btn btn-danger ml-2" (click)="open(deleteModal)">Usuń temat</button>
   </span>
 </div>

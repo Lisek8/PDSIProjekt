@@ -17,7 +17,7 @@ export interface TopicDataPersonal extends TopicDataSimple {
     status: TopicStatus;
     student: string;
     messages: number;
-    examDate?: Date;
+    examDate?: string;
 }
 
 export interface TopicDataFull extends TopicDataPersonal {
