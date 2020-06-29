@@ -1,0 +1,126 @@
+<h2>Moje tematy</h2>
+<div class="mt-2 mb-2" *ngIf="currentUserType === userTypes.Lecturer || currentUserType === userTypes.Admin">
+  <h5>Filtrowanie</h5>
+  <div class="d-flex justify-content-start flex-wrap">
+    <div class="pt-2 pb-2 mr-2">
+      <p-multiSelect [options]="selectOptionsType" [(ngModel)]="selectedTypes"
+        (onChange)="personalTopicsTable.filter($event.value, 'type', 'in')" defaultLabel="Rodzaj pracy">
+      </p-multiSelect>
+    </div>
+    <div class="pt-2 pb-2 mr-2">
+      <p-multiSelect [options]="selectOptionsStatus" [(ngModel)]="selectedStatuses"
+        (onChange)="personalTopicsTable.filter($event.value, 'status', 'in')" defaultLabel="Status">
+      </p-multiSelect>
+    </div>
+    <div class="ui-inputgroup pt-2 pb-2 ml-auto">
+      <span class="ui-inputgroup-addon"><i class="fa fa-search"></i></span>
+      <input type="text" pInputText placeholder="Szukaj" [(ngModel)]="searchInput"
+        (ngModelChange)="personalTopicsTable.filterGlobal($event, 'contains');">
+    </div>
+  </div>
+</div>
+
+<div class="p-1 d-flex flex-row-reverse justify-content-start" *ngIf="currentUserType === userTypes.Lecturer || currentUserType === userTypes.Admin">
+  <span class="ml-2">
+    <button class="btn btn-primary" (click)="open(content)">Stwórz temat</button>
+  </span>
+</div>
+<div>
+  <h5>Tematy</h5>
+  <p-table #personalTopicsTable [columns]="cols" [value]="topics" [tableStyleClass]="'table table-bordered'"
+    dataKey="id">
+    <ng-template pTemplate="header" let-columns>
+      <tr class="text-center">
+        <th style="min-width: 35px; width: 50px;"></th>
+        <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+          <span *ngIf="currentUserType !== userTypes.Lecturer && col.field === personalTopicsTableHeaders.Student; else elseBlock">Wykładowca</span>
+          <ng-template #elseBlock>{{col.header}}</ng-template>
+          <p-sortIcon [field]="col.field"></p-sortIcon>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+      <tr>
+        <td class="align-middle text-center">
+          <a href="#" [pRowToggler]="rowData">
+            <i [ngClass]="expanded ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
+          </a>
+        </td>
+        <td *ngFor="let col of columns" class="align-middle text-center">
+          <span *ngIf="currentUserType !== userTypes.Lecturer && col.field === personalTopicsTableHeaders.Student; else elseBlockColumn">{{rowData.lecturer}}</span>
+          <ng-template #elseBlockColumn>{{rowData[col.field]}}</ng-template>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+      <tr>
+        <td [attr.colspan]="columns.length + 1">
+          <div class="container-fluid p-2 m-2" style="font-size:16px;">
+            <div class="p-1">
+              <b>Temat:</b> {{rowData.topic}}
+            </div>
+            <div class="p-1">
+              <b>Status:</b> {{rowData.status}}
+            </div>
+            <div class="p-1">
+              <span *ngIf="currentUserType !== userTypes.Lecturer; else elseBlockStudent"><b>Wykładowca:</b> {{rowData.lecturer}}</span>
+              <ng-template #elseBlockStudent><b>Realizator:</b> {{rowData.student}}</ng-template>
+            </div>
+            <div class="p-1">
+              <b>Nowych wiadomości:</b> {{rowData.messages}}
+            </div>
+            <div class="p-1">
+              <b>Data obrony:</b> {{rowData.examDate}}
+            </div>
+            <div class="p-1">
+              <b>Opis</b>
+              <div class="text-justify">
+                {{rowData.description}}
+              </div>
+            </div>
+            <div class="p-1 d-flex flex-row-reverse justify-content-start">
+              <span class="ml-2">
+                <a routerLink="/topicview/{{rowData.id}}"><button type="button" class="btn btn-primary">Zobacz więcej</button></a>
+              </span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Edycja tematu</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-group">
+        <label for="topic">Temat</label>
+        <input type="text" class="form-control" id="topic" name="topic" placeholder="Temat" [(ngModel)]="newTopicInfo.topic">
+      </div>
+      <div class="form-group">
+        <label for="type">Typ pracy</label>
+        <select class="form-control" id="type" name="type" [(ngModel)]="newTopicInfo.type">
+          <option>{{ topicTypes.Engineer }}</option>
+          <option>{{ topicTypes.Master }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="description">Opis</label>
+        <textarea class="form-control" id="description" name="description" rows="10" [(ngModel)]="newTopicInfo.description"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="tags">Tagi</label>
+        <input type="text" class="form-control" id="tags" name="tags" placeholder="Tagi oddzielone przecinkiem" [(ngModel)]="topicTags">
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close();createTopic()">Zapisz</button>
+  </div>
+</ng-template>

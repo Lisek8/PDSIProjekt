@@ -1,7 +1,7 @@
 package com.backend.security;
 
-
 import org.json.JSONObject;
+import com.backend.db.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -95,6 +96,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
             @Override
             public void onAuthenticationFailure(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
                 httpServletResponse.setStatus(401);
+                httpServletResponse.getWriter().append("GUEST");
+
             }
         };
     }
@@ -115,6 +118,13 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 json.put("userType",authentication.getAuthorities().iterator().next().toString());
                 httpServletResponse.getWriter().append(json.toString());
                 httpServletResponse.setStatus(200);
+                //Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                //String type = "GUEST";
+                //if (principal instanceof UserPrincipal) {
+                    //type = ((UserPrincipal) principal).getUserType();
+                    //type = type.toUpperCase();
+                //}
+                //httpServletResponse.getWriter().append(type);
             }
         };
     }

@@ -1,0 +1,25 @@
+<h2>Temat</h2>
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" [ngClass]="{'active': activeTab === tabs.General}"
+      (click)="setTab(tabs.General)">{{ tabs.General }}</a>
+  </li>
+  <li class="nav-item" *ngIf="currentUserType !== userTypes.Admin">
+    <a class="nav-link" [ngClass]="{'active': activeTab === tabs.Messages}"
+      (click)="setTab(tabs.Messages)">{{ tabs.Messages }}</a>
+  </li>
+  <li class="nav-item" *ngIf="currentUserType === userTypes.Lecturer">
+    <a class="nav-link" [ngClass]="{'active': activeTab === tabs.AcceptanceRequests}"
+      (click)="setTab(tabs.AcceptanceRequests)">{{ tabs.AcceptanceRequests }}</a>
+  </li>
+</ul>
+<div class="container-fluid pt-3 pb-3" [ngSwitch]="activeTab">
+  <app-topic-view-general *ngSwitchCase="tabs.General" [data]="topicInfo | async"></app-topic-view-general>
+  <span *ngIf="currentUserType !== userTypes.Admin">
+    <app-topic-view-messages *ngSwitchCase="tabs.Messages" [data]="topicInfo | async"></app-topic-view-messages>
+  </span>
+  <span *ngIf="currentUserType === userTypes.Lecturer">
+    <app-topic-view-acceptance-requests *ngSwitchCase="tabs.AcceptanceRequests" [data]="topicInfo | async">
+    </app-topic-view-acceptance-requests>
+  </span>
+</div>
