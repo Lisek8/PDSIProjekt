@@ -339,7 +339,7 @@ public class MainController extends SpringBootServletInitializer {
     }
 
     @GetMapping("/dashboard")
-    //@PreAuthorize("hasAuthority('LECTURER')")
+    @PreAuthorize("hasAuthority('LECTURER')")
     @ResponseBody
     Dashboard info() {
         UserPrincipal userPrincipal = getPrincipal();
@@ -348,11 +348,11 @@ public class MainController extends SpringBootServletInitializer {
             newMessages += getNewMessages(false, topic);
         }
         return new Dashboard(
-                topicRepo.findAllByStatusAndLecturerId(Status.Available, lecturerRepo.findByUserId(userPrincipal.getId()).getId()).size(),
-                topicRepo.findAllByStatusAndLecturerId(Status.InProgress, lecturerRepo.findByUserId(userPrincipal.getId()).getId()).size(),
-                topicRepo.findAllByStatusAndLecturerId(Status.RequiredAction, lecturerRepo.findByUserId(userPrincipal.getId()).getId())
+                topicRepo.findAllByStatusAndLecturerId("Wolny", lecturerRepo.findByUserId(userPrincipal.getId()).getId()).size(),
+                topicRepo.findAllByStatusAndLecturerId("W trakcie realizacji", lecturerRepo.findByUserId(userPrincipal.getId()).getId()).size(),
+                topicRepo.findAllByStatusAndLecturerId("Wymaga potwierdzenia", lecturerRepo.findByUserId(userPrincipal.getId()).getId())
                         .size(),
-                topicRepo.findAllByStatusAndLecturerId(Status.Finished, lecturerRepo.findByUserId(userPrincipal.getId()).getId()).size(),
+                topicRepo.findAllByStatusAndLecturerId("Zakończony", lecturerRepo.findByUserId(userPrincipal.getId()).getId()).size(),
                 newMessages);
     }
 
