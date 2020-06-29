@@ -8,7 +8,7 @@ public class TopicDataFull extends TopicDataPersonal {
     String arrangements;
     String[]files;
     RequestSender[] acceptanceRequests;
-    public TopicDataFull(int id, String faculty, String lecturer, Type type, String topic, String description, String tags, Status status,
+    public TopicDataFull(int id, String faculty, String lecturer, Type type, String topic, String description, String tags, String  status,
                          String student, int messages, String date, ConversationFull[]conversations, String arrangements, String files, RequestSender[]acceptanceRequests) {
         super(id, faculty, lecturer, type, topic, description, tags, status, student, messages, date);
         this.conversations = conversations;

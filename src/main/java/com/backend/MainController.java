@@ -175,7 +175,7 @@ public class MainController extends SpringBootServletInitializer {
             topic.setDescription(description);
         if (tags != null)
             topic.setTags(String.join(",", tags));
-        topic.setStatus(Status.valueOf(status));
+        topic.setStatus(status);
         SimpleDateFormat formatter2 = new SimpleDateFormat("yyyy-MM-dd");
         if (date != null) {
             try {
@@ -238,10 +238,10 @@ public class MainController extends SpringBootServletInitializer {
         UserPrincipal principal = getPrincipal();
         AcceptanceRequest acceptanceRequest = new AcceptanceRequest(id, studentRepo.findByUserId(principal.getId()).getId());
         acceptanceRequestRepo.save(acceptanceRequest);
-        changeStatus(id, Status.RequiredAction);
+        changeStatus(id, "Wymaga potwierdzenia");
     }
 
-    private void changeStatus(int topicId, Status status) {
+    private void changeStatus(int topicId, String status) {
         Topic topic = topicRepo.findById(topicId);
         topic.setStatus(status);
         topicRepo.save(topic);
@@ -252,10 +252,10 @@ public class MainController extends SpringBootServletInitializer {
     void decideOnRequest(int id, boolean decision) {
         Topic topic = topicRepo.findById(acceptanceRequestRepo.findById(id).getTopicId());
         if (!decision && acceptanceRequestRepo.findAllByTopicId(topic.getId()).size() == 1) {
-            changeStatus(topic.getId(), Status.Available);
+            changeStatus(topic.getId(), "Wolny");
             acceptanceRequestRepo.deleteById(id);
         } else {
-            changeStatus(topic.getId(), Status.InProgress);
+            changeStatus(topic.getId(), "W trakcie realizacji");
             topic.setStudentId(acceptanceRequestRepo.findById(id).getStudent_id());
             topicRepo.save(topic);
             conversationRepo.save(new Conversation(topic.getId(), topic.getStudentId(), topic.getLecturerId()));
