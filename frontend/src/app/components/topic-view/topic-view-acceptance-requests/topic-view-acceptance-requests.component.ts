@@ -2,6 +2,10 @@ import { Component, OnInit, Input } from '@angular/core';
 import { TopicDataFull } from 'src/app/models/topic-data';
 import { AcceptanceRequestTableHeaders } from 'src/app/enums/acceptance-request-table-headers.enum';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
+import { DataService } from 'src/app/services/data/data.service';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 @Component({
   selector: 'app-topic-view-acceptance-requests',
@@ -22,7 +26,7 @@ export class TopicViewAcceptanceRequestsComponent implements OnInit {
 
   acceptanceHeaders = AcceptanceRequestTableHeaders;
 
-  constructor(private modalService: NgbModal) { }
+  constructor(private modalService: NgbModal, private toastService: ToastrService, private dataService: DataService) { }
 
   ngOnInit() {
   }
@@ -37,10 +41,30 @@ export class TopicViewAcceptanceRequestsComponent implements OnInit {
   }
 
   rejectRequest() {
-    // not implemented
+    this.dataService.decideOnAcceptingRequest(this.acceptanceId, false)
+    .pipe(
+      catchError(err => {
+        this.toastService.error('Wystąpił błąd podczas odrzucania prośby o realizcję tematu', 'Błąd');
+        return throwError(err);
+      })
+    )
+    .subscribe(value => {
+      this.toastService.success('Pomyślnie odrzucono prośbę o realizację tematu', 'Sukces');
+      this.data.acceptanceRequests.filter(request => request.id !== this.acceptanceId);
+    });
   }
 
   acceptRequest() {
-    // not implemented
+    this.dataService.decideOnAcceptingRequest(this.acceptanceId, true)
+    .pipe(
+      catchError(err => {
+        this.toastService.error('Wystąpił błąd podczas akceptowania prośby o realizcję tematu', 'Błąd');
+        return throwError(err);
+      })
+    )
+    .subscribe(value => {
+      this.toastService.success('Pomyślnie akceptowano prośbę o realizację tematu', 'Sukces');
+      this.data.acceptanceRequests = [];
+    });
   }
 }

@@ -7,7 +7,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TopicType } from 'src/app/enums/topic-type.enum';
 import { UserType } from 'src/app/enums/user-type.enum';
 import { RoleGuardService } from 'src/app/services/role-guard/role-guard.service';
-import { BehaviorSubject, EMPTY } from 'rxjs';
+import { BehaviorSubject, EMPTY, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 
@@ -90,6 +90,15 @@ export class PersonalTopicsComponent implements OnInit {
 
   createTopic() {
     this.newTopicInfo.tags = this.topicTags.split(',');
-    // not implemented
+    this.dataService.createTopic(this.newTopicInfo.type, this.newTopicInfo.topic, this.newTopicInfo.description, this.newTopicInfo.tags)
+    .pipe(
+      catchError(err => {
+        this.toastService.error('Wystąpił błąd podczas tworzenia tematu', 'Błąd');
+        return throwError(err);
+      })
+    ).subscribe(value => {
+      this.toastService.success('Udało się stworzyć temat', 'Sukces');
+    });
   }
+
 }

@@ -1,16 +1,11 @@
 import { Message } from './message';
 
-export interface ConversationSimple {
+export interface Conversation {
     id: number;
     topicId: number;
     topic: string;
-    recipients: {
-        student: string;
-        lecturer: string;
-    };
+    student: string;
+    lecturer: string;
     unreadMessages: number;
-}
-
-export interface Conversation extends ConversationSimple {
     messages: Message[];
 }

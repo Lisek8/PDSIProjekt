@@ -37,8 +37,8 @@
     <p>Pozostałe prośby o realizację tematu zostaną <span class="font-weight-bold">automatycznie odrzucone</span>!</p>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-danger" (click)="modal.close()">Anuluj</button>
-    <button type="button" class="btn btn-success" (click)="modal.close();acceptRequest()">Potwierdź</button>
+    <button type="button" class="btn btn-outline-secondary" (click)="modal.close()">Anuluj</button>
+    <button type="button" class="btn btn-success" (click)="modal.close();acceptRequest()">Akceptuj</button>
   </div>
 </ng-template>
 
@@ -53,7 +53,7 @@
     <p>Czy na pewno chcesz odrzucić realizację tego tematu dla <span class="font-weight-bold">{{ acceptanceStudent }}</span>?</p>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-danger" (click)="modal.close();rejectRequest()">Anuluj</button>
-    <button type="button" class="btn btn-success" (click)="modal.close()">Potwierdź</button>
+    <button type="button" class="btn btn-outline-secondary" (click)="modal.close()">Anuluj</button>
+    <button type="button" class="btn btn-danger" (click)="modal.close();rejectRequest()">Odrzuć</button>
   </div>
 </ng-template>

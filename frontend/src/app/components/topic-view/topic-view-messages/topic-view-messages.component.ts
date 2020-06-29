@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { UserType } from 'src/app/enums/user-type.enum';
 import { RoleGuardService } from 'src/app/services/role-guard/role-guard.service';
 import { BehaviorSubject } from 'rxjs';
+import { DataService } from 'src/app/services/data/data.service';
 
 @Component({
   selector: 'app-topic-view-messages',
@@ -23,7 +24,7 @@ export class TopicViewMessagesComponent implements OnInit {
     { header: MessageTableLecturerHeaders.Recipient, field: 'recipients.' + (this.currentUserType === this.userTypes.User ? 'lecturer' : 'student') }
   ];
 
-  constructor(private toastService: ToastrService, private roleService: RoleGuardService) { }
+  constructor(private toastService: ToastrService, private roleService: RoleGuardService, private dataService: DataService) { }
 
   ngOnInit() {
     this.messageContent = '';
@@ -32,14 +33,19 @@ export class TopicViewMessagesComponent implements OnInit {
     this.subject.subscribe(value => this.currentUserType = value);
   }
 
-  async sendMessage() {
+  clearMessageContent() {
+    this.messageContent = '';
+  }
+
+  async sendMessage(conversationId: number) {
     this.disableSend = true;
-    this.toastService.info('Wysyłanie wiadomości', 'Info');
-    this.toastService.warning('Funkcja w fazie testów', 'Ostrzeżenie');
-    if (this.messageContent.length > 0) {
-      this.toastService.success('Wiadomość pomyślnie wysłana', 'Sukces');
-    }
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    await this.dataService.sendMessage(conversationId, this.messageContent).toPromise().then(
+      success => {
+        this.toastService.success('Wiadomość pomyślnie wysłana', 'Sukces');
+        this.clearMessageContent();
+      },
+      error => this.toastService.error('Wystąpił błąd podczas wysyłania wiadomości', 'Błąd')
+    );
     this.disableSend = false;
   }
 
