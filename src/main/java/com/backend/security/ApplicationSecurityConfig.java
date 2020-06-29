@@ -28,6 +28,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.concurrent.TimeUnit;
 
 
@@ -114,17 +115,16 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         return new AuthenticationSuccessHandler() {
             @Override
             public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
+                Object principal = authentication.getPrincipal();
+                String type = "GUEST";
+                if (principal instanceof UserPrincipal) {
+                    type = ((UserPrincipal) principal).getUserType();
+                    type = type.toUpperCase();
+                }
                 JSONObject json=new JSONObject();
-                json.put("userType",authentication.getAuthorities().iterator().next().toString());
+                json.put("userType",type);
                 httpServletResponse.getWriter().append(json.toString());
                 httpServletResponse.setStatus(200);
-                //Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                //String type = "GUEST";
-                //if (principal instanceof UserPrincipal) {
-                    //type = ((UserPrincipal) principal).getUserType();
-                    //type = type.toUpperCase();
-                //}
-                //httpServletResponse.getWriter().append(type);
             }
         };
     }
