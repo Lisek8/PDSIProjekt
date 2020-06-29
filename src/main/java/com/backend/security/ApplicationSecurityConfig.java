@@ -1,6 +1,6 @@
 package com.backend.security;
 
-
+import org.json.JSONObject;
 import com.backend.db.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -23,10 +23,12 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.concurrent.TimeUnit;
 
 
@@ -113,15 +115,16 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         return new AuthenticationSuccessHandler() {
             @Override
             public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
-                //httpServletResponse.getWriter().append("OK");
-                httpServletResponse.setStatus(200);
-                Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                Object principal = authentication.getPrincipal();
                 String type = "GUEST";
                 if (principal instanceof UserPrincipal) {
                     type = ((UserPrincipal) principal).getUserType();
                     type = type.toUpperCase();
                 }
-                httpServletResponse.getWriter().append(type);
+                JSONObject json=new JSONObject();
+                json.put("userType",type);
+                httpServletResponse.getWriter().append(json.toString());
+                httpServletResponse.setStatus(200);
             }
         };
     }
