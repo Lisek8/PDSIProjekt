@@ -1,6 +1,7 @@
 package com.backend.security;
 
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -109,7 +111,9 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         return new AuthenticationSuccessHandler() {
             @Override
             public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
-                //httpServletResponse.getWriter().append("OK");
+                JSONObject json=new JSONObject();
+                json.put("userType",authentication.getAuthorities().iterator().next().toString());
+                httpServletResponse.getWriter().append(json.toString());
                 httpServletResponse.setStatus(200);
             }
         };
