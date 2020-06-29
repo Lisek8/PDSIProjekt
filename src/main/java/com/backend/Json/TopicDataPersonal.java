@@ -4,13 +4,13 @@ import com.backend.db.Status;
 import com.backend.db.Type;
 
 public class TopicDataPersonal extends TopicDataSimple {
-    Status status;
+    String status;
     String student;
     int messages;
     String date;
 
     public TopicDataPersonal(int id, String faculty, String lecturer, Type type, String topic,
-                             String description, String tags, Status status, String student, int messages, String date) {
+                             String description, String tags, String status, String student, int messages, String date) {
         super(id, faculty, lecturer, type, topic, description, tags);
         this.status=status;
         this.student=student;
@@ -18,11 +18,11 @@ public class TopicDataPersonal extends TopicDataSimple {
         this.date=date;
     }
 
-    public Status getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

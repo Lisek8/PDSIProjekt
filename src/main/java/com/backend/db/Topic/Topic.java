@@ -27,8 +27,7 @@ public class Topic {
     private String topic;
     private String description;
     private String tags;
-    @Enumerated(EnumType.STRING)
-    private Status status;
+    private String status;
     private String arrangements;
     private String files;
     @Column(columnDefinition = "DATE")
@@ -45,7 +44,7 @@ public class Topic {
         this.topic=topic;
         this.description=description;
         this.tags=tags;
-        this.status=Status.Available;
+        this.status="Wolny";
         this.arrangements="";
         this.files="";
     }
@@ -58,7 +57,7 @@ public class Topic {
         this.topic=topic;
         this.description=description;
         this.tags=tags;
-        this.status=Status.Available;
+        this.status="Wolny";
         this.arrangements = arrangements;
         this.files = files;
         this.date = date;
@@ -130,11 +129,11 @@ public class Topic {
         this.tags = tags;
     }
 
-    public Status getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
