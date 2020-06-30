@@ -51,13 +51,7 @@ export class PersonalTopicsComponent implements OnInit {
     this.topics = [];
     this.currentUserType = this.subject.getValue();
     this.subject.subscribe(value => this.currentUserType = value);
-    this.dataService.getPersonalTopics()
-    .pipe(
-      catchError(err => {
-        this.toastService.error('Nie udało się pobrać listy tematów', 'Błąd');
-        return EMPTY;
-      })
-    ).subscribe((topics) => this.topics = topics);
+    this.getPersonalTopics();
     this.populateFilters();
   }
 
@@ -98,7 +92,18 @@ export class PersonalTopicsComponent implements OnInit {
       })
     ).subscribe(value => {
       this.toastService.success('Udało się stworzyć temat', 'Sukces');
+      this.getPersonalTopics();
     });
+  }
+
+  private getPersonalTopics() {
+    this.dataService.getPersonalTopics()
+    .pipe(
+      catchError(err => {
+        this.toastService.error('Nie udało się pobrać listy tematów', 'Błąd');
+        return EMPTY;
+      })
+    ).subscribe((topics) => this.topics = topics);
   }
 
 }
