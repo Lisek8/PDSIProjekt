@@ -30,6 +30,9 @@ import org.springframework.stereotype.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -338,7 +341,34 @@ public class MainController extends SpringBootServletInitializer {
             conversation.setLastMessageByStudent(false);
         conversationRepo.save(conversation);
         messageRepo.save(new Message(author, msg.getContent(), msg.getConversationId()));
+    }
 
+    @PreAuthorize("hasAuthority('STUDENT')")
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping(value = "/message", params = "topicId")
+    void sendMessage(int topicId,@RequestBody String content) {
+        UserPrincipal principal = getPrincipal();
+        int userId = getId(principal, true);
+        String author;
+
+        Conversation conversation = conversationRepo.findByStudentIdAndTopicId(studentRepo.findByUserId(principal.getId()).getId(),topicId);
+        author = studentRepo.findById(userId).getName() + " " + studentRepo.findById(userId).getSurname();
+        if(conversation==null){
+            conversation = new Conversation(topicId,
+                    studentRepo.findByUserId(principal.getId()).getId(),
+                    topicRepo.findById(topicId).getLecturerId());
+
+            conversation.setUnread_messages(1);
+            conversationRepo.save(conversation);
+        }
+        else if (conversation.isLastMessageByStudent())
+            conversation.setUnread_messages(conversation.getUnread_messages() + 1);
+        else
+            conversation.setUnread_messages(1);
+            conversation.setLastMessageByStudent(true);
+
+        conversationRepo.save(conversation);
+        messageRepo.save(new Message(author, content, conversation.getId()));
     }
 
     @GetMapping("/dashboard")
@@ -405,6 +435,18 @@ public class MainController extends SpringBootServletInitializer {
     }
 
     ConversationFull getConversation(Conversation conversation) {
+        UserPrincipal principal = getPrincipal();
+        boolean isStudent = isStudent(principal);
+        if((!isStudent && conversation.isLastMessageByStudent()) || isStudent &&!conversation.isLastMessageByStudent() ){
+            conversation.setUnread_messages(0);
+            List<Message>msgList = messageRepo.findAllByConversationIdAndIsRead(conversation.getId(),false);
+            for(Message message:msgList){
+                message.setIsRead(true);
+                messageRepo.save(message);
+            }
+            conversationRepo.save(conversation);
+        }
+
         Lecturer lecturer = lecturerRepo.findById(conversation.getLecturerId());
         Student student = studentRepo.findById(conversation.getStudentId());
         Topic topic = topicRepo.findById(conversation.getTopicId());
@@ -424,12 +466,17 @@ public class MainController extends SpringBootServletInitializer {
     }
 
     public List<Message> getMessageList(int id) {
+        DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+                .appendPattern("yyyy-MM-dd[ HH:mm]")
+                .toFormatter();
         List<Message> list = new ArrayList<>();
         for (Message message : messageRepo.findAll()) {
-            if (message.getConversation_id() == id) {
+            if (message.getConversationId() == id) {
+                message.setDate(LocalDateTime.parse(message.getDate().toString().replace('T', ' ').substring(0,16),formatter));
                 list.add(message);
             }
         }
+
         return list;
     }
 

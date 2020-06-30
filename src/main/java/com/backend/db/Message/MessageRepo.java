@@ -2,6 +2,8 @@ package com.backend.db.Message;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MessageRepo extends JpaRepository<Message,Integer> {
+import java.util.List;
 
+public interface MessageRepo extends JpaRepository<Message,Integer> {
+    List<Message> findAllByConversationIdAndIsRead(int id, boolean isRead);
 }
