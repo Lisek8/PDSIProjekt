@@ -56,8 +56,11 @@ export class TopicViewGeneralComponent implements OnInit {
 
   saveChanges() {
     this.dataEditCopy.tags = this.topicTags.split(',');
-    this.dataEditCopy.examDate = this.examDate.year.toString() + '-' + (this.examDate.month - 1).toString() +
-      '-' + this.examDate.day.toString();
+    console.log(this.examDate);
+    if (this.examDate != null) {
+      this.dataEditCopy.examDate = this.examDate.year.toString() + '-' + (this.examDate.month - 1).toString() +
+        '-' + this.examDate.day.toString();
+    }
     this.dataService.modifyTopic(this.dataEditCopy).pipe(
       catchError(err => {
         this.toastService.error('Wystąpił błąd podczas modyfikacji tematu', 'Błąd');
