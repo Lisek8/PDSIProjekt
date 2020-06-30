@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { TopicDataFull } from 'src/app/models/topic-data';
 import { AcceptanceRequestTableHeaders } from 'src/app/enums/acceptance-request-table-headers.enum';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -14,6 +14,7 @@ import { throwError } from 'rxjs';
 })
 export class TopicViewAcceptanceRequestsComponent implements OnInit {
   @Input() data: TopicDataFull;
+  @Output() requestRefreshEvent = new EventEmitter();
 
   acceptanceStudent: string;
   acceptanceId: number;
@@ -50,7 +51,7 @@ export class TopicViewAcceptanceRequestsComponent implements OnInit {
     )
     .subscribe(value => {
       this.toastService.success('Pomyślnie odrzucono prośbę o realizację tematu', 'Sukces');
-      this.data.acceptanceRequests.filter(request => request.id !== this.acceptanceId);
+      this.requestRefreshEvent.emit();
     });
   }
 
@@ -64,7 +65,7 @@ export class TopicViewAcceptanceRequestsComponent implements OnInit {
     )
     .subscribe(value => {
       this.toastService.success('Pomyślnie akceptowano prośbę o realizację tematu', 'Sukces');
-      this.data.acceptanceRequests = [];
+      this.requestRefreshEvent.emit();
     });
   }
 }

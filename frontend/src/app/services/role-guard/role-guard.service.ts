@@ -68,7 +68,7 @@ export class RoleGuardService implements CanActivate {
   async logout() {
     this.http.post(environment.restServicesPath + 'logout', {}).subscribe();
     this.deleteSession();
-    this.getUserTypeFromBackend();
+    this.currentUser.next(UserType.Guest);
   }
 
   private deleteSession() {

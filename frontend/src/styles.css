@@ -220,3 +220,8 @@ body.dark div.form-group textarea {
     background-color: #333333;
     color: #eee;
 }
+
+.description {
+    word-break: break-word;
+    white-space: pre-line;
+}

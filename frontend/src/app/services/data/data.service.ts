@@ -38,7 +38,15 @@ export class DataService {
   }
 
   modifyTopic(topicData: TopicDataFull) {
-    return this.http.put<TopicDataFull>(environment.restServicesPath + 'topic', topicData);
+    return this.http.put<any>(environment.restServicesPath + 'topic', {
+      id: topicData.id,
+      topicName: topicData.topic,
+      status: topicData.status,
+      type: topicData.type,
+      examDate: topicData.examDate,
+      description: topicData.description,
+      tags: topicData.tags
+    });
   }
 
   deleteTopic(topicId: number) {
