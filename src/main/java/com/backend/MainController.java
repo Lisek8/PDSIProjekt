@@ -30,6 +30,10 @@ import org.springframework.stereotype.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -424,9 +428,13 @@ public class MainController extends SpringBootServletInitializer {
     }
 
     public List<Message> getMessageList(int id) {
+        DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+                .appendPattern("yyyy-MM-dd[ HH:mm]")
+                .toFormatter();
         List<Message> list = new ArrayList<>();
         for (Message message : messageRepo.findAll()) {
             if (message.getConversation_id() == id) {
+                message.setDate(LocalDateTime.parse(message.getDate().toString().replace('T', ' ').substring(0,16),formatter));
                 list.add(message);
             }
         }
