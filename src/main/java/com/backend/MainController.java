@@ -22,12 +22,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -241,11 +243,18 @@ public class MainController extends SpringBootServletInitializer {
     @PostMapping("/acceptancerequest")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('STUDENT')")
-    void postRequest(int id) {
+    ResponseEntity<String> postRequest(int id, HttpServletResponse httpRes) {
         UserPrincipal principal = getPrincipal();
-        AcceptanceRequest acceptanceRequest = new AcceptanceRequest(id, studentRepo.findByUserId(principal.getId()).getId());
-        acceptanceRequestRepo.save(acceptanceRequest);
-        changeStatus(id, "Wymaga potwierdzenia");
+        AcceptanceRequest acceptanceRequest = acceptanceRequestRepo.findByTopicIdAndStudentId(id, studentRepo.findByUserId(principal.getId()).getId());
+        if(acceptanceRequest==null) {
+            acceptanceRequest = new AcceptanceRequest(id, studentRepo.findByUserId(principal.getId()).getId());
+            acceptanceRequestRepo.save(acceptanceRequest);
+            changeStatus(id, "Wymaga potwierdzenia");
+        }
+        else
+            return new ResponseEntity<String>(HttpStatus.FORBIDDEN);
+
+        return null;
     }
 
     private void changeStatus(int topicId, String status) {
@@ -264,7 +273,7 @@ public class MainController extends SpringBootServletInitializer {
             acceptanceRequestRepo.deleteById(decision.getId());
         } else {
             changeStatus(topic.getId(), "W trakcie realizacji");
-            topic.setStudentId(acceptanceRequestRepo.findById(decision.getId()).getStudent_id());
+            topic.setStudentId(acceptanceRequestRepo.findById(decision.getId()).getStudentId());
             topicRepo.save(topic);
             conversationRepo.save(new Conversation(topic.getId(), topic.getStudentId(), topic.getLecturerId()));
             for (AcceptanceRequest request : acceptanceRequestRepo.findAllByTopicId(acceptanceRequestRepo.findById(decision.getId()).getTopicId())) {
@@ -427,7 +436,7 @@ public class MainController extends SpringBootServletInitializer {
     public List<RequestSender> getRequests(int id) {
         List<RequestSender> returnList = new ArrayList<>();
         for (AcceptanceRequest request : acceptanceRequestRepo.findAllByTopicId(id)) {
-            Student student = studentRepo.findById(request.getStudent_id());
+            Student student = studentRepo.findById(request.getStudentId());
             returnList.add(new RequestSender(request.getId(), request.getTopicId(), request.getDate(),
                     student.getName() + " " + student.getSurname()));
         }

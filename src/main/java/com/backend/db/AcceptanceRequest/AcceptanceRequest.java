@@ -13,16 +13,17 @@ public class AcceptanceRequest {
     private int topicId;
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime date;
-    private int student_id;
+    @Column(name="student_id")
+    private int studentId;
 
     public AcceptanceRequest(){
 
     }
 
-    public AcceptanceRequest(int topicId, int student_id){
+    public AcceptanceRequest(int topicId, int studentId){
         this.topicId = topicId;
         this.date = LocalDateTime.now();
-        this.student_id=student_id;
+        this.studentId = studentId;
     }
 
     public int getId() {
@@ -49,11 +50,11 @@ public class AcceptanceRequest {
         this.date = date;
     }
 
-    public int getStudent_id() {
-        return student_id;
+    public int getStudentId() {
+        return studentId;
     }
 
-    public void setStudent_id(int student_id) {
-        this.student_id = student_id;
+    public void setStudentId(int student_id) {
+        this.studentId = student_id;
     }
 }
