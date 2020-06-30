@@ -10,4 +10,6 @@ public interface TopicRepo  extends JpaRepository<Topic,Integer> {
     List<Topic> findAllByStudentId(int id);
     List<Topic> findAllByLecturerId(int id);
     List<Topic> findAllByStatusAndLecturerId(String status, int id);
+    List<Topic> findAllByStatus(String status);
+
 }
