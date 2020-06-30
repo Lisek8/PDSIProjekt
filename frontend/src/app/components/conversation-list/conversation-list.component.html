@@ -21,9 +21,6 @@
         <td *ngFor="let col of columns" [ngSwitch]="col.field" class="align-middle text-center">
           <span *ngSwitchCase="'student'">{{ rowData.student }}</span>
           <span *ngSwitchCase="'lecturer'">{{ rowData.lecturer }}</span>
-          <span *ngSwitchCase="'actions'">
-            <a routerLink="/topicview/{{rowData.topicId}}"><button class="btn btn-primary">Otwórz</button></a>
-          </span>
           <span *ngSwitchDefault>{{ rowData[col.field] }}</span>
         </td>
       </tr>

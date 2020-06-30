@@ -34,8 +34,7 @@ export class ConversationListComponent implements OnInit {
       this.currentUserType === UserType.Lecturer ?
       { field: ConversationTableHeaders.Student, header: 'Student', sortable: true } :
       { field: ConversationTableHeaders.Lecturer, header: 'Wykładowca', sortable: true },
-      { field: ConversationTableHeaders.Messages, header: 'Nowych wiadomości', sortable: true },
-      { field: ConversationTableHeaders.Actions, header: '', sortable: false }
+      { field: ConversationTableHeaders.Messages, header: 'Nowych wiadomości', sortable: true }
     ];
   }
 
