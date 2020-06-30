@@ -9,7 +9,7 @@ public class TopicDataPersonal extends TopicDataSimple {
     int messages;
     String date;
 
-    public TopicDataPersonal(int id, String faculty, String lecturer, Type type, String topic,
+    public TopicDataPersonal(int id, String faculty, String lecturer, String type, String topic,
                              String description, String tags, String status, String student, int messages, String date) {
         super(id, faculty, lecturer, type, topic, description, tags);
         this.status=status;
