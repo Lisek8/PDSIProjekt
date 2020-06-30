@@ -1,13 +1,11 @@
 package com.backend.Json;
 
-import com.backend.db.Type;
-
 public class PutTopic {
     private int id;
     private String topicName;
     private String status;
     private String type;
-    private String date;
+    private String examDate;
     private String description;
     private String[] tags;
 
@@ -43,12 +41,12 @@ public class PutTopic {
         this.type = type;
     }
 
-    public String getDate() {
-        return date;
+    public String getExamDate() {
+        return examDate;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setExamDate(String examDate) {
+        this.examDate = examDate;
     }
 
     public String getDescription() {
