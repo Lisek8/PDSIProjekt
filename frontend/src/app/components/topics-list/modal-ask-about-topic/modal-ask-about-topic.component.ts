@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { TopicDataSimple } from 'src/app/models/topic-data';
+/* import { DataService } from 'src/app/services/data/data.service';
+import { ToastrService } from 'ngx-toastr'; */
 
 @Component({
   selector: 'app-modal-ask-about-topic',
@@ -14,13 +16,13 @@ export class ModalAskAboutTopicComponent implements OnInit {
 
   message: string;
 
-  constructor() {}
+  constructor(/* private dataService: DataService, private toastService: ToastrService */) {}
 
   ngOnInit(): void {
   }
 
   createConversation(topicId: number, message: string) {
-    console.warn('Not implemented yet');
+    // this.dataService.sendMessage()
   }
 
 }

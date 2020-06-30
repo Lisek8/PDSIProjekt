@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { TopicDataFull } from 'src/app/models/topic-data';
 import { MessageTableLecturerHeaders } from 'src/app/enums/message-table-lecturer-headers.enum';
 import { ToastrService } from 'ngx-toastr';
@@ -14,6 +14,7 @@ import { DataService } from 'src/app/services/data/data.service';
 })
 export class TopicViewMessagesComponent implements OnInit {
   @Input() data: TopicDataFull;
+  @Output() requestRefreshEvent = new EventEmitter();
   messageContent: string;
   disableSend: boolean;
   subject: BehaviorSubject<UserType> = this.roleService.getUserType();
@@ -43,6 +44,7 @@ export class TopicViewMessagesComponent implements OnInit {
       success => {
         this.toastService.success('Wiadomość pomyślnie wysłana', 'Sukces');
         this.clearMessageContent();
+        this.requestRefreshEvent.emit();
       },
       error => this.toastService.error('Wystąpił błąd podczas wysyłania wiadomości', 'Błąd')
     );

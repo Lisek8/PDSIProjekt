@@ -26,13 +26,7 @@ export class ConversationListComponent implements OnInit {
   constructor(private dataService: DataService, private roleService: RoleGuardService, private toastService: ToastrService) { }
 
   ngOnInit() {
-    this.dataService.getConversations()
-    .pipe(
-      catchError(err => {
-        this.toastService.error('Nie udało się pobrać listy wiadomości', 'Błąd');
-        return EMPTY;
-      })
-    ).subscribe((convos: Conversation[]) => this.conversations = convos);
+    this.getConversations();
     this.currentUserType = this.subject.getValue();
     this.subject.subscribe(value => this.currentUserType = value);
     this.cols = [
@@ -51,6 +45,7 @@ export class ConversationListComponent implements OnInit {
       success => {
         this.toastService.success('Wiadomość pomyślnie wysłana', 'Sukces');
         this.clearMessageContent();
+        this.getConversations();
       },
       error => this.toastService.error('Wystąpił błąd podczas wysyłania wiadomości', 'Błąd')
     );
@@ -59,6 +54,16 @@ export class ConversationListComponent implements OnInit {
 
   clearMessageContent() {
     this.messageContent = '';
+  }
+
+  private getConversations() {
+    this.dataService.getConversations()
+    .pipe(
+      catchError(err => {
+        this.toastService.error('Nie udało się pobrać listy wiadomości', 'Błąd');
+        return EMPTY;
+      })
+    ).subscribe((convos: Conversation[]) => this.conversations = convos);
   }
 
 }
