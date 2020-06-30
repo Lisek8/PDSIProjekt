@@ -16,19 +16,21 @@ public class Message {
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime date;
     private String content;
-    private int conversation_id;
-    private boolean is_read;
+    @Column(name="conversation_id")
+    private int conversationId;
+    @Column(name="is_read")
+    private boolean isRead;
 
     public Message(){
 
     }
 
-    public Message(String author, String content, int conversation_id) {
+    public Message(String author, String content, int conversationId) {
         this.author = author;
         this.content = content;
-        this.conversation_id = conversation_id;
+        this.conversationId = conversationId;
         this.date = LocalDateTime.now();
-        this.is_read=false;
+        this.isRead =false;
     }
 
     public String getContent() {
@@ -64,21 +66,21 @@ public class Message {
     }
     @JsonIgnore
     @JsonProperty(value = "conversation_id")
-    public int getConversation_id() {
-        return conversation_id;
+    public int getConversationId() {
+        return conversationId;
     }
 
-    public void setConversation_id(int conversation_id) {
-        this.conversation_id = conversation_id;
+    public void setConversationId(int conversation_id) {
+        this.conversationId = conversation_id;
     }
 
     @JsonIgnore
     @JsonProperty(value = "is_read")
-    public boolean isIs_read() {
-        return is_read;
+    public boolean isIsRead() {
+        return isRead;
     }
 
-    public void setIs_read(boolean is_read) {
-        this.is_read = is_read;
+    public void setIsRead(boolean is_read) {
+        this.isRead = is_read;
     }
 }
