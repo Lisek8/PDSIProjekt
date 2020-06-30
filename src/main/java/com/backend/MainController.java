@@ -64,7 +64,7 @@ public class MainController extends SpringBootServletInitializer {
     @GetMapping("/topiclist")
     @ResponseBody
     List<TopicDataSimple> getTopics() {
-        List<Topic> topicList = topicRepo.findAll();
+        List<Topic> topicList = topicRepo.findAllByStatus("Wolny");
         List<TopicDataSimple> returnList = new ArrayList<>();
         for (Topic topic : topicList) {
             Lecturer lecturer = lecturerRepo.findById(topic.getLecturerId());
