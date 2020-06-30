@@ -236,6 +236,7 @@ public class MainController extends SpringBootServletInitializer {
     }
 
     @PostMapping("/acceptancerequest")
+    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('STUDENT')")
     void postRequest(int id) {
         UserPrincipal principal = getPrincipal();
@@ -250,19 +251,20 @@ public class MainController extends SpringBootServletInitializer {
         topicRepo.save(topic);
     }
 
-    @PostMapping("/acceptancerequestdecision")
+    @PutMapping("/acceptancerequest")
+    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('LECTURER')")
-    void decideOnRequest(int id, boolean decision) {
-        Topic topic = topicRepo.findById(acceptanceRequestRepo.findById(id).getTopicId());
-        if (!decision && acceptanceRequestRepo.findAllByTopicId(topic.getId()).size() == 1) {
+    void decideOnRequest(@RequestBody Decision decision) {
+        Topic topic = topicRepo.findById(acceptanceRequestRepo.findById(decision.getId()).getTopicId());
+        if (!decision.isDecision() && acceptanceRequestRepo.findAllByTopicId(topic.getId()).size() == 1) {
             changeStatus(topic.getId(), "Wolny");
-            acceptanceRequestRepo.deleteById(id);
+            acceptanceRequestRepo.deleteById(decision.getId());
         } else {
             changeStatus(topic.getId(), "W trakcie realizacji");
-            topic.setStudentId(acceptanceRequestRepo.findById(id).getStudent_id());
+            topic.setStudentId(acceptanceRequestRepo.findById(decision.getId()).getStudent_id());
             topicRepo.save(topic);
             conversationRepo.save(new Conversation(topic.getId(), topic.getStudentId(), topic.getLecturerId()));
-            for (AcceptanceRequest request : acceptanceRequestRepo.findAllByTopicId(acceptanceRequestRepo.findById(id).getTopicId())) {
+            for (AcceptanceRequest request : acceptanceRequestRepo.findAllByTopicId(acceptanceRequestRepo.findById(decision.getId()).getTopicId())) {
                 acceptanceRequestRepo.deleteById(request.getId());
             }
         }
@@ -271,7 +273,7 @@ public class MainController extends SpringBootServletInitializer {
     @GetMapping("/conversations")
     @PreAuthorize("hasAuthority('LECTURER') or hasAuthority('STUDENT')")
     @ResponseBody
-    List<ConversationSimple> showConversations() {
+    List<ConversationFull> showConversations() {
         UserPrincipal principal = getPrincipal();
         boolean isStudent = isStudent(principal);
         int userId = getId(principal, isStudent);
@@ -279,13 +281,9 @@ public class MainController extends SpringBootServletInitializer {
         List<Conversation> convoList;
         convoList = findAllConversations(userId, isStudent);
 
-        List<ConversationSimple> returnList = new ArrayList<>();
+        List<ConversationFull> returnList = new ArrayList<>();
         for (Conversation conversation : convoList) {
-            Lecturer lecturer = lecturerRepo.findById(conversation.getLecturerId());
-            Student student = studentRepo.findById(conversation.getStudentId());
-            Topic topic = topicRepo.findById(conversation.getTopicId());
-            returnList.add(new ConversationSimple(conversation.getId(), conversation.getTopicId(), topic.getTopic(),
-                    student.getName() + " " + student.getSurname(), lecturer.getName(), conversation.getUnread_messages()));
+            returnList.add(getConversation(conversation));
         }
         return returnList;
     }
