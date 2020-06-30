@@ -104,8 +104,9 @@ public class MainController extends SpringBootServletInitializer {
             String date;
             if (topic.getDate() == null)
                 date = "";
-            else
-                date = topic.getDate().toString();
+            else{
+                date = new SimpleDateFormat("yyyy-MM-dd").format(topic.getDate());
+            }
             returnList.add(new TopicDataPersonal(topic.getId(), topic.getFaculty(), lecturer.getName(), topic.getType(), topic.getTopic(),
                     topic.getDescription(), topic.getTags(), topic.getStatus(), name, newMessages, date));
         }
@@ -147,8 +148,9 @@ public class MainController extends SpringBootServletInitializer {
         String date;
         if (topic.getDate() == null)
             date = "";
-        else
-            date = topic.getDate().toString();
+        else {
+            date = new SimpleDateFormat("yyyy-MM-dd").format(topic.getDate());
+        }
         return new TopicDataFull(topic.getId(), userPrincipal.getFaculty(), lecturerRepo.findById(topic.getLecturerId()).getName(),
                 topic.getType(), topic.getTopic(), topic.getDescription(), topic.getTags(), topic.getStatus(), student,
                 getNewMessages(isStudent, topic), date, conversations, topic.getArrangements(), topic.getFiles(), acceptanceRequests);
@@ -181,7 +183,7 @@ public class MainController extends SpringBootServletInitializer {
             try {
                 topic.setDate(formatter2.parse(putTopic.getExamDate()));
             } catch (ParseException e) {
-                throw new RuntimeException("Podano zły format daty(wymagany yyyy-MM-dd)");
+                topic.setDate(null);
             }
         }
 
