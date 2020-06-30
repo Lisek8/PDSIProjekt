@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TopicDataSimple, TopicDataFull, TopicDataPersonal } from '../../models/topic-data';
 import { Conversation } from '../../models/conversation';
-import { Dashboard } from '../../models/dashboard';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { TopicType } from 'src/app/enums/topic-type.enum';
@@ -75,12 +74,10 @@ export class DataService {
   }
 
   decideOnAcceptingRequest(requestId: number, decision: boolean) {
-    return this.http.put(environment.restServicesPath + 'acceptancerequest', decision);
-  }
-
-  // DASHBOARD
-  getDashboardData(): Observable<Dashboard> {
-    return this.http.get<Dashboard>(environment.restServicesPath + 'dashboard');
+    return this.http.put(environment.restServicesPath + 'acceptancerequest', {
+      id: requestId,
+      decision
+    });
   }
 
 }
