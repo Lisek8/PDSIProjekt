@@ -5,7 +5,6 @@ import { TopicsListComponent } from './components/topics-list/topics-list.compon
 import { PersonalTopicsComponent } from './components/personal-topics/personal-topics.component';
 import { TopicViewComponent } from './components/topic-view/topic-view.component';
 import { ConversationListComponent } from './components/conversation-list/conversation-list.component';
-import { LecturerPanelComponent } from './components/lecturer-panel/lecturer-panel.component';
 import { LoginComponent } from './components/login/login.component';
 import { RoleGuardService } from './services/role-guard/role-guard.service';
 
@@ -27,11 +26,6 @@ const routes: Routes = [
   {
     path: 'conversations',
     component: ConversationListComponent,
-    canActivate: [RoleGuardService]
-  },
-  {
-    path: 'dashboard',
-    component: LecturerPanelComponent,
     canActivate: [RoleGuardService]
   },
   {

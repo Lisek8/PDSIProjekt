@@ -65,18 +65,17 @@ export class DataService {
     });
   }
 
+  sendMessageToTopic(topicId: number, message: string) {
+    return this.http.post(environment.restServicesPath + 'message?topicId=' + topicId.toString(), message.toString());
+  }
+
   // ACCEPTANCE REQUESTS
   createAcceptanceRequest(topicId: number) {
-    return this.http.post(environment.restServicesPath + 'acceptancerequest', {
-      id: topicId
-    });
+    return this.http.post(environment.restServicesPath + 'acceptancerequest?id=' + topicId, {});
   }
 
   decideOnAcceptingRequest(requestId: number, decision: boolean) {
-    return this.http.put(environment.restServicesPath + 'acceptancerequest', {
-      id: requestId,
-      decision
-    });
+    return this.http.put(environment.restServicesPath + 'acceptancerequest', decision);
   }
 
   // DASHBOARD

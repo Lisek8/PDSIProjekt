@@ -13,7 +13,6 @@ import { PersonalTopicsComponent } from './components/personal-topics/personal-t
 import { TopicViewModule } from './components/topic-view/topic-view.module';
 import { ConversationListComponent } from './components/conversation-list/conversation-list.component';
 import { ToastrModule } from 'ngx-toastr';
-import { LecturerPanelComponent } from './components/lecturer-panel/lecturer-panel.component';
 import { ChartModule } from 'primeng/chart';
 import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -29,7 +28,6 @@ import { LoginComponent } from './components/login/login.component';
       TopicsListComponent,
       PersonalTopicsComponent,
       ConversationListComponent,
-      LecturerPanelComponent,
       ModalReserveConfirmationComponent,
       ModalAskAboutTopicComponent,
       LoginComponent
