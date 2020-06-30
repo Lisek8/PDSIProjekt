@@ -1,21 +1,18 @@
 package com.backend.Json;
 
-import com.backend.db.Status;
-import com.backend.db.Type;
-
 public class TopicDataPersonal extends TopicDataSimple {
     String status;
     String student;
     int messages;
-    String date;
+    String examDate;
 
     public TopicDataPersonal(int id, String faculty, String lecturer, String type, String topic,
-                             String description, String tags, String status, String student, int messages, String date) {
+                             String description, String tags, String status, String student, int messages, String examDate) {
         super(id, faculty, lecturer, type, topic, description, tags);
         this.status=status;
         this.student=student;
         this.messages=messages;
-        this.date=date;
+        this.examDate = examDate;
     }
 
     public String getStatus() {
@@ -42,11 +39,11 @@ public class TopicDataPersonal extends TopicDataSimple {
         this.messages = messages;
     }
 
-    public String getDate() {
-        return date;
+    public String getExamDate() {
+        return examDate;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setExamDate(String examDate) {
+        this.examDate = examDate;
     }
 }

@@ -2,8 +2,6 @@ package com.backend;
 
 import com.backend.Json.*;
 import com.backend.db.UserType;
-import com.backend.db.Status;
-import com.backend.db.Type;
 import com.backend.db.AcceptanceRequest.AcceptanceRequest;
 import com.backend.db.AcceptanceRequest.AcceptanceRequestRepo;
 import com.backend.db.Conversation.Conversation;
@@ -179,9 +177,9 @@ public class MainController extends SpringBootServletInitializer {
             topic.setTags(String.join(",", putTopic.getTags()));
         if(putTopic.getStatus()!=null)topic.setStatus(putTopic.getStatus());
         SimpleDateFormat formatter2 = new SimpleDateFormat("yyyy-MM-dd");
-        if (putTopic.getDate() != null) {
+        if (putTopic.getExamDate() != null) {
             try {
-                topic.setDate(formatter2.parse(putTopic.getDate()));
+                topic.setDate(formatter2.parse(putTopic.getExamDate()));
             } catch (ParseException e) {
                 throw new RuntimeException("Podano zły format daty(wymagany yyyy-MM-dd)");
             }
