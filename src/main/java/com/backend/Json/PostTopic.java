@@ -1,18 +1,16 @@
 package com.backend.Json;
 
-import com.backend.db.Type;
-
 public class PostTopic {
-    private Type type;
+    private String type;
     private String topic;
     private String description;
     private String[] tags;
 
-    public Type getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Type type) {
+    public void setType(String type) {
         this.type = type;
     }
 

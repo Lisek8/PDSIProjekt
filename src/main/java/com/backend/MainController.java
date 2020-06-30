@@ -197,7 +197,7 @@ public class MainController extends SpringBootServletInitializer {
         UserPrincipal userPrincipal = getPrincipal();
         Lecturer lecturer = lecturerRepo.findByUserId(userPrincipal.getId());
         String tag = String.join(",", topic.getTags());
-        Topic t = new Topic(userPrincipal.getFaculty(), lecturer.getId(), topic.getType(), topic.getTopic(), topic.getDescription(), tag);
+        Topic t = new Topic(userPrincipal.getFaculty(), lecturer.getId(), Type.valueOf(topic.getType()), topic.getTopic(), topic.getDescription(), tag);
         topicRepo.save(t);
     }
 
@@ -311,6 +311,7 @@ public class MainController extends SpringBootServletInitializer {
     }
 
     @PreAuthorize("hasAuthority('LECTURER') or hasAuthority('STUDENT')or hasAuthority('ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
     @PostMapping(value = "/message")
     void sendMessage(@RequestBody PostMessage msg) {
         UserPrincipal principal = getPrincipal();
