@@ -6,12 +6,12 @@ public class TopicDataSimple {
     private int id;
     private String faculty;
     private String lecturer;
-    private Type type;
+    private String type;
     private String topic;
     private String description;
     private String[] tags;
 
-    public TopicDataSimple(int id, String faculty, String lecturer, Type type, String topic, String description, String tags) {
+    public TopicDataSimple(int id, String faculty, String lecturer, String type, String topic, String description, String tags) {
         this.id = id;
         this.faculty = faculty;
         this.lecturer = lecturer;
@@ -45,11 +45,11 @@ public class TopicDataSimple {
         this.lecturer = lecturer;
     }
 
-    public Type getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Type type) {
+    public void setType(String type) {
         this.type = type;
     }
 

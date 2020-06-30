@@ -21,8 +21,7 @@ public class Topic {
     @Column(name="lecturer_id")
     private int lecturerId;
 
-    @Enumerated(EnumType.STRING)
-    private Type type;
+    private String type;
 
     private String topic;
     private String description;
@@ -36,7 +35,7 @@ public class Topic {
 
     }
 
-    public Topic(String faculty, int lecturerId, Type type, String topic, String description, String tags){
+    public Topic(String faculty, int lecturerId, String type, String topic, String description, String tags){
         this.faculty=faculty;
         this.studentId =null;
         this.lecturerId = lecturerId;
@@ -49,7 +48,7 @@ public class Topic {
         this.files="";
     }
 
-    public Topic(String faculty, int lecturerId, Type type, String topic, String description, String tags, String arrangements, String files, Date date){
+    public Topic(String faculty, int lecturerId, String type, String topic, String description, String tags, String arrangements, String files, Date date){
         this.faculty=faculty;
         this.studentId =null;
         this.lecturerId = lecturerId;
@@ -113,11 +112,11 @@ public class Topic {
         this.faculty = faculty;
     }
 
-    public Type getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Type type) {
+    public void setType(String type) {
         this.type = type;
     }
 

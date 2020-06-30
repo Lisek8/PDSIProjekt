@@ -171,7 +171,7 @@ public class MainController extends SpringBootServletInitializer {
                 throw new RuntimeException("Brak dostępu do tematu");
         }
 
-        if(putTopic.getType()!=null)topic.setType(Type.valueOf(putTopic.getType()));
+        if(putTopic.getType()!=null)topic.setType(putTopic.getType());
         if(putTopic.getTopicName()!=null)topic.setTopic(putTopic.getTopicName());
         if (putTopic.getDescription() != null)
             topic.setDescription(putTopic.getDescription());
@@ -197,7 +197,7 @@ public class MainController extends SpringBootServletInitializer {
         UserPrincipal userPrincipal = getPrincipal();
         Lecturer lecturer = lecturerRepo.findByUserId(userPrincipal.getId());
         String tag = String.join(",", topic.getTags());
-        Topic t = new Topic(userPrincipal.getFaculty(), lecturer.getId(), Type.valueOf(topic.getType()), topic.getTopic(), topic.getDescription(), tag);
+        Topic t = new Topic(userPrincipal.getFaculty(), lecturer.getId(), topic.getType(), topic.getTopic(), topic.getDescription(), tag);
         topicRepo.save(t);
     }
 
