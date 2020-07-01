@@ -10,4 +10,5 @@ public interface ConversationRepo extends JpaRepository<Conversation,Integer> {
     List<Conversation>findAllByStudentId(int id);
     List<Conversation> findAllByLecturerIdAndTopicId(int lecturer_id,int topic_id);
     List<Conversation>findAllByLecturerId(int id);
+    List<Conversation>findAllByTopicId(int id);
 }
