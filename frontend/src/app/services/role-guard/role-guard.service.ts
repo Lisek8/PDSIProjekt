@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { UserType } from 'src/app/enums/user-type.enum';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { ToastrService } from 'ngx-toastr';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +36,7 @@ export class RoleGuardService implements CanActivate {
     }
   ];
 
-  constructor(private router: Router, private http: HttpClient) { }
+  constructor(private router: Router, private http: HttpClient, private toastService: ToastrService) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot):
     boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
@@ -65,16 +67,16 @@ export class RoleGuardService implements CanActivate {
     return this.currentUser;
   }
 
-  async logout() {
-    this.http.post(environment.restServicesPath + 'logout', {}).subscribe();
-    this.deleteSession();
-    this.currentUser.next(UserType.Guest);
+  logout() {
+    this.http.post(environment.restServicesPath + 'logout', {}).pipe(
+      catchError(err => {
+        this.toastService.error('Wystąpił błąd podczas wylogowywania', 'Błąd');
+        return throwError(err);
+      })
+    ).subscribe(value => {
+      this.toastService.success('Pomyślnie wylogowano', 'Sukces');
+      this.currentUser.next(UserType.Guest);
+    });
   }
-
-  private deleteSession() {
-    const d = new Date();
-    d.setTime(d.getTime() + 24 * 60 * 60 * 1000 * -1);
-    document.cookie = 'JSESSIONID=;path=/;expires=' + d.toUTCString();
-}
 
 }
