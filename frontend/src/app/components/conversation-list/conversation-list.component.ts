@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ConversationTableHeaders } from '../../enums/ConversationTableHeaders.enum';
+import { ConversationTableHeaders } from '../../enums/conversation-table-headers';
 import { DataService } from '../../services/data/data.service';
 import { RoleGuardService } from 'src/app/services/role-guard/role-guard.service';
 import { UserType } from 'src/app/enums/user-type.enum';
