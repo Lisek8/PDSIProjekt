@@ -221,6 +221,15 @@ body.dark div.form-group textarea {
     color: #eee;
 }
 
+body.dark label[for=login],
+body.dark label[for=password] {
+    color: #eee;
+}
+
+body.dark .description {
+    color: #eee;
+}
+
 .description {
     word-break: break-word;
     white-space: pre-line;
