@@ -85,6 +85,16 @@ public class MainController extends SpringBootServletInitializer {
             userPrincipal = (((UserPrincipal) principal));
         else
             throw new RuntimeException("Wrong user type");
+        if(userPrincipal.getUserType().equalsIgnoreCase("admin")){
+            List<Topic> topicList;
+            List<TopicDataPersonal> returnList = new ArrayList<>();
+            topicList = topicRepo.findAll();
+            for (Topic topic : topicList) {
+                int newMessages = 0;
+                getPersonalTopicList(returnList, topic, newMessages);
+            }
+            return returnList;
+        }
         boolean isStudent = isStudent(userPrincipal);
         int userId = getId(userPrincipal, isStudent);
 
@@ -99,23 +109,27 @@ public class MainController extends SpringBootServletInitializer {
         List<TopicDataPersonal> returnList = new ArrayList<>();
         for (Topic topic : topicList) {
             int newMessages = getNewMessages(isStudent, topic);
-            Lecturer lecturer = lecturerRepo.findById(topic.getLecturerId());
-            String name;
-            if (topic.getStudentId() != null) {
-                Student student = studentRepo.findById((int) topic.getStudentId());
-                name = student.getName() + " " + student.getSurname();
-            } else
-                name = "";
-            String date;
-            if (topic.getDate() == null)
-                date = "";
-            else{
-                date = new SimpleDateFormat("yyyy-MM-dd").format(topic.getDate());
-            }
-            returnList.add(new TopicDataPersonal(topic.getId(), topic.getFaculty(), lecturer.getName(), topic.getType(), topic.getTopic(),
-                    topic.getDescription(), topic.getTags(), topic.getStatus(), name, newMessages, date));
+            getPersonalTopicList(returnList, topic, newMessages);
         }
         return returnList;
+    }
+
+    private void getPersonalTopicList(List<TopicDataPersonal> returnList, Topic topic, int newMessages) {
+        Lecturer lecturer = lecturerRepo.findById(topic.getLecturerId());
+        String name;
+        if (topic.getStudentId() != null) {
+            Student student = studentRepo.findById((int) topic.getStudentId());
+            name = student.getName() + " " + student.getSurname();
+        } else
+            name = "";
+        String date;
+        if (topic.getDate() == null)
+            date = "";
+        else{
+            date = new SimpleDateFormat("yyyy-MM-dd").format(topic.getDate());
+        }
+        returnList.add(new TopicDataPersonal(topic.getId(), topic.getFaculty(), lecturer.getName(), topic.getType(), topic.getTopic(),
+                topic.getDescription(), topic.getTags(), topic.getStatus(), name, newMessages, date));
     }
 
     @GetMapping("/topic")
@@ -212,8 +226,15 @@ public class MainController extends SpringBootServletInitializer {
     @PreAuthorize("hasAuthority('LECTURER') or hasAuthority('ADMIN')")
     void deleteTopic(int id) {
         Topic topicToDelete = topicRepo.findById(id);
-        if (topicToDelete != null)
+        if (topicToDelete != null) {
+            List<Conversation> conversations = conversationRepo.findAllByTopicId(topicToDelete.getId());
+            for(Conversation conversation:conversations){
+                messageRepo.deleteAllByConversationId(conversation.getId());
+                conversationRepo.delete(conversation);
+            }
+            acceptanceRequestRepo.deleteAllByTopicId(topicToDelete.getId());
             topicRepo.delete(topicToDelete);
+        }
     }
 
     @GetMapping("/users")
