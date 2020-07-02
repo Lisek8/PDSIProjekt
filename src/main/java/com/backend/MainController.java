@@ -67,6 +67,7 @@ public class MainController extends SpringBootServletInitializer {
     @ResponseBody
     List<TopicDataSimple> getTopics() {
         List<Topic> topicList = topicRepo.findAllByStatus("Wolny");
+        topicList.addAll(topicRepo.findAllByStatus("Wymaga potwierdzenia"));
         List<TopicDataSimple> returnList = new ArrayList<>();
         for (Topic topic : topicList) {
             Lecturer lecturer = lecturerRepo.findById(topic.getLecturerId());
