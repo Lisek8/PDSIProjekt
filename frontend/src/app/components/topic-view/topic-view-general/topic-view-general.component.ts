@@ -79,6 +79,7 @@ export class TopicViewGeneralComponent implements OnInit {
         return throwError(err);
       })
     ).subscribe(value => {
+      this.toastService.success('Pomyślnie usunięto temat', 'Sukces');
       this.router.navigate(['personal']);
     });
   }
