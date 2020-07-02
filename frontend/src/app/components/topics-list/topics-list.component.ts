@@ -60,8 +60,10 @@ export class TopicsListComponent implements OnInit, OnDestroy {
         return EMPTY;
       })
     )
-    .subscribe((topics) => this.topics = topics);
-    this.populateFilters();
+    .subscribe((topics) => {
+      this.topics = topics;
+      this.populateFilters();
+    });
   }
 
   ngOnDestroy() {
