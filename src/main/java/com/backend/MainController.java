@@ -297,7 +297,8 @@ public class MainController extends SpringBootServletInitializer {
             changeStatus(topic.getId(), "W trakcie realizacji");
             topic.setStudentId(acceptanceRequestRepo.findById(decision.getId()).getStudentId());
             topicRepo.save(topic);
-            conversationRepo.save(new Conversation(topic.getId(), topic.getStudentId(), topic.getLecturerId()));
+            if(conversationRepo.findByStudentIdAndTopicId(topic.getStudentId(),topic.getId())==null)
+                conversationRepo.save(new Conversation(topic.getId(), topic.getStudentId(), topic.getLecturerId()));
             for (AcceptanceRequest request : acceptanceRequestRepo.findAllByTopicId(acceptanceRequestRepo.findById(decision.getId()).getTopicId())) {
                 acceptanceRequestRepo.deleteById(request.getId());
             }
